@@ -9,6 +9,9 @@ gem "rails", "~> 7.0.4"
 gem "sprockets-rails"
 
 gem "sass-rails"
+
+gem 'arctic_admin'
+
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 
