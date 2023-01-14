@@ -1,24 +1,33 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Versions
 
-Things you may want to cover:
+- ruby **3.1.2**
+- rails **7.0.4**
+- postgres **14**
 
-* Ruby version
+## HOW START
 
-* System dependencies
+- clone project
+  ```bash
+  git clone git@github.com:kolan4ick/AssistorAPI.git
+  cd AssistorAPI
+  ```
 
-* Configuration
+- install ruby and RVM if need
+  ```bash
+  bundle
+  cp .env-template .env
+  ```
 
-* Database creation
+- change *.env* file if need product env
+- create db and run migrates
+  ```bash
+  rails db:setup
+  ```
 
-* Database initialization
+- Run project
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+  ```bash
+  rails s
+  ```
