@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_15_100042) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_15_102529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_15_100042) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "gatherings", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.float "sum"
+    t.datetime "start"
+    t.datetime "end"
+    t.boolean "ended"
+    t.boolean "verification"
+    t.string "link"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "volunteer_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -69,6 +83,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_15_100042) do
     t.boolean "verification"
     t.integer "trust_level"
     t.string "description"
+    t.string "surname"
     t.index ["email"], name: "index_volunteers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_volunteers_on_reset_password_token", unique: true
   end
