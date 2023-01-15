@@ -98,6 +98,8 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise-token_authenticatable (1.1.0)
+      devise (>= 4.0.0, < 5.0.0)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -248,6 +250,7 @@ DEPENDENCIES
   bootsnap
   debug
   devise
+  devise-token_authenticatable
   dotenv-rails
   pg (~> 1.1)
   puma (~> 5.0)

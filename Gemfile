@@ -24,6 +24,8 @@ gem "devise"
 
 gem "activeadmin"
 
+gem 'devise-token_authenticatable'
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
