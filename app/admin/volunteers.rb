@@ -1,6 +1,8 @@
 ActiveAdmin.register Volunteer do
 
-  permit_params :name, :surname, :email, :phone, :login, :description, :trust_level, :verification, :created_at, :updated_at, :avatar
+  permit_params :name, :surname, :email, :password, :password_confirmation, :phone,
+                :login, :description, :trust_level, :verification, :created_at,
+                :updated_at, :avatar,
 
   index do
     selectable_column
@@ -35,14 +37,14 @@ ActiveAdmin.register Volunteer do
       f.input :name
       f.input :surname
       f.input :email
+      f.input :password
+      f.input :password_confirmation
       f.input :phone
       f.input :login
       f.input :description
       f.input :trust_level
       f.input :verification
       f.input :avatar, as: :file, input_html: { accept: 'image/*' }
-      f.input :created_at
-      f.input :updated_at
     end
     f.actions
   end
@@ -57,8 +59,9 @@ ActiveAdmin.register Volunteer do
       row :description
       row :trust_level
       row :verification
+      row :authentication_token
       row :avatar do |volunteer|
-        image_tag volunteer.avatar.url, size: '100'
+        image_tag volunteer.avatar.url, size: '100' if volunteer.avatar.present?
       end
       row :created_at
       row :updated_at

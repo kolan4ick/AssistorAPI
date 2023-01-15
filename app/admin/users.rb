@@ -36,6 +36,7 @@ ActiveAdmin.register User do
       row :email
       row :name
       row :surname
+      row :authentication_token
       row :login
       row :created_at
     end
