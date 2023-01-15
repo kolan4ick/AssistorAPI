@@ -1,11 +1,12 @@
 ActiveAdmin.register Gathering do
-  permit_params :title, :description, :sum, :start, :end, :ended, :verification, :link, :volunteer_id, photos: [], finished_photos: []
+  permit_params :title, :description, :gathering_category, :sum, :start, :end, :ended, :verification, :link, :volunteer_id, photos: [], finished_photos: []
 
   index do
     selectable_column
     id_column
     column :title
     column :description
+    column :gathering_category
     column :sum
     column :start
     column :end
@@ -20,6 +21,7 @@ ActiveAdmin.register Gathering do
 
   filter :title
   filter :description
+  filter :gathering_category
   filter :sum
   filter :start
   filter :end
@@ -32,6 +34,7 @@ ActiveAdmin.register Gathering do
     f.inputs "Gathering Details" do
       f.input :title
       f.input :description
+      f.input :gathering_category
       f.input :sum
       f.input :start
       f.input :end
@@ -49,6 +52,7 @@ ActiveAdmin.register Gathering do
     attributes_table do
       row :title
       row :description
+      row :gathering_category
       row :sum
       row :start
       row :end

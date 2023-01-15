@@ -5,5 +5,5 @@ class Gathering < ApplicationRecord
 
   has_one_attached :finished_photos
 
-
+  belongs_to :gathering_category
 end
