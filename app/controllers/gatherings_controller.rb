@@ -1,5 +1,7 @@
 class GatheringsController < ApiController
-  before_action :authenticate!, only: [:index, :show]
+  include GatheringHelper
+
+  before_action :authenticate!, only: [:index, :show, :filter_gatherings]
   before_action :set_gathering, only: [:show, :update, :destroy]
   before_action :authenticate_volunteer!, only: [:create, :update, :destroy]
 
@@ -37,6 +39,16 @@ class GatheringsController < ApiController
   # DELETE /gatherings/1
   def destroy
     @gathering.destroy
+  end
+
+  def filter_gatherings
+    @gatherings = Gathering.all
+
+    @filtered_gatherings = filtering(@gatherings)
+
+    @filtered_gatherings = sorting(@filtered_gatherings)
+
+    render json: @filtered_gatherings
   end
 
   private

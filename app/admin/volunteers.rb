@@ -2,7 +2,7 @@ ActiveAdmin.register Volunteer do
 
   permit_params :name, :surname, :email, :password, :password_confirmation, :phone,
                 :login, :description, :trust_level, :verification, :created_at,
-                :updated_at, :avatar,
+                :updated_at, :avatar, :banned
 
   index do
     selectable_column
@@ -14,6 +14,7 @@ ActiveAdmin.register Volunteer do
     column :login
     column :description
     column :trust_level
+    column :banned
     column :verification
     column :avatar
     column :created_at
@@ -28,6 +29,7 @@ ActiveAdmin.register Volunteer do
   filter :login
   filter :description
   filter :trust_level
+  filter :banned
   filter :verification
   filter :created_at
   filter :updated_at
@@ -43,6 +45,7 @@ ActiveAdmin.register Volunteer do
       f.input :login
       f.input :description
       f.input :trust_level
+      f.input :banned
       f.input :verification
       f.input :avatar, as: :file, input_html: { accept: 'image/*' }
     end
@@ -58,6 +61,7 @@ ActiveAdmin.register Volunteer do
       row :login
       row :description
       row :trust_level
+      row :banned
       row :verification
       row :authentication_token
       row :avatar do |volunteer|
