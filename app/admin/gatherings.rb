@@ -1,5 +1,5 @@
 ActiveAdmin.register Gathering do
-  permit_params :title, :description, :gathering_category, :sum, :start, :end, :ended, :verification, :link, :volunteer_id, photos: [], finished_photos: []
+  permit_params :title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification, :link, :volunteer_id, photos: [], finished_photos: []
 
   index do
     selectable_column
@@ -34,7 +34,7 @@ ActiveAdmin.register Gathering do
     f.inputs "Gathering Details" do
       f.input :title
       f.input :description
-      f.input :gathering_category
+      f.input :gathering_category_id, as: :select, collection: GatheringCategory.all.map { |u| [u.title, u.id] }
       f.input :sum
       f.input :start
       f.input :end
@@ -61,13 +61,17 @@ ActiveAdmin.register Gathering do
       row :link
       row :volunteer
       row :photos do |gathering|
-        gathering.photos.each do |photo|
-          span image_tag url_for(photo), size: '100'
+        div do
+          gathering.photos.each do |photo|
+            span image_tag url_for(photo), size: '100'
+          end
         end
       end
-      row :finished_photos do |gathering|
-        gathering.finished_photos.each do |photo|
-          span image_tag url_for(photo), size: '100'
+      row :finished_photos do
+        div do
+          gathering.finished_photos.each do |photo|
+            span image_tag url_for(photo), size: '100'
+          end
         end
       end
     end

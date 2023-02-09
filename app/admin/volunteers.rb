@@ -65,7 +65,7 @@ ActiveAdmin.register Volunteer do
       row :verification
       row :authentication_token
       row :avatar do |volunteer|
-        image_tag volunteer.avatar.url, size: '100' if volunteer.avatar.present?
+        image_tag volunteer.avatar, size: '100' if volunteer.avatar.present?
       end
       row :created_at
       row :updated_at
