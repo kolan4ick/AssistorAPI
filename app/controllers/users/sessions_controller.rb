@@ -2,7 +2,10 @@
 
 class Users::SessionsController < Devise::SessionsController
   # before_action :configure_sign_in_params, only: [:create]
-  protect_from_forgery prepend: true
+  protect_from_forgery with: :null_session
+
+  prepend_before_action :require_no_authentication, only: [:new]
+
   # GET /resource/sign_in
   def new
     render json: { error: "Users sign in GET request is not allowed" }, status: 400
@@ -10,6 +13,17 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
+
+    # add sign in by token
+    if params[:auth_token].present?
+      pp user = User.find_by(authentication_token: params[:auth_token])
+      if user.present?
+        sign_in(user)
+        render json: user
+        return
+      end
+    end
+
     self.resource = warden.authenticate!(auth_options)
     set_flash_message!(:notice, :signed_in)
     sign_in(resource_name, resource)

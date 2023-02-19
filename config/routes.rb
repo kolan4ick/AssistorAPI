@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   resources :gathering_categories
   resources :gatherings
   get :filter_gatherings, to: 'gatherings#filter_gatherings'
+
+  root to: 'api#index'
 end
