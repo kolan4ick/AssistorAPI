@@ -19,16 +19,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
         sign_up(resource_name, resource)
-        render json: { status: "success", message: "User created successfully", data: resource }
+        render json: current_user
       else
         set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
         expire_data_after_sign_in!
-        render json: { status: "error", message: "User not created", data: resource }
+        render status: 400, json: { status: "error", message: "User not created", data: resource }
       end
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render json: { status: "error", message: "User not created", data: resource }
+      render status: 400, json: { status: "error", message: "User not created", data: resource }
     end
   end
 
