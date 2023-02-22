@@ -8,7 +8,7 @@ class Volunteers::SessionsController < Devise::SessionsController
 
   # GET /resource/sign_in
   def new
-    render json: { error: "Volunteer sign in GET request is not allowed", status: 400 }
+    render json: { error: "Volunteer sign in GET request is not allowed" }, status: 400
   end
 
   # POST /resource/sign_in
