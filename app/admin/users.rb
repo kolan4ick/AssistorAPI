@@ -1,6 +1,6 @@
 ActiveAdmin.register User do
 
-  permit_params :email, :password, :password_confirmation, :name, :surname, :login
+  permit_params :email, :password, :password_confirmation, :name, :surname, :username
 
   index do
     selectable_column
@@ -8,7 +8,7 @@ ActiveAdmin.register User do
     column :email
     column :name
     column :surname
-    column :login
+    column :username
     column :created_at
     actions
   end
@@ -16,7 +16,7 @@ ActiveAdmin.register User do
   filter :email
   filter :name
   filter :surname
-  filter :login
+  filter :username
   filter :created_at
 
   form do |f|
@@ -26,7 +26,7 @@ ActiveAdmin.register User do
       f.input :password_confirmation
       f.input :name
       f.input :surname
-      f.input :login
+      f.input :username
     end
     f.actions
   end
@@ -37,7 +37,7 @@ ActiveAdmin.register User do
       row :name
       row :surname
       row :authentication_token
-      row :login
+      row :username
       row :created_at
     end
   end

@@ -1,7 +1,7 @@
 ActiveAdmin.register Volunteer do
 
   permit_params :name, :surname, :email, :password, :password_confirmation, :phone,
-                :login, :description, :trust_level, :verification, :created_at,
+                :username, :description, :trust_level, :verification, :created_at,
                 :updated_at, :avatar, :banned
 
   index do
@@ -11,7 +11,7 @@ ActiveAdmin.register Volunteer do
     column :surname
     column :email
     column :phone
-    column :login
+    column :username
     column :description
     column :trust_level
     column :banned
@@ -26,7 +26,7 @@ ActiveAdmin.register Volunteer do
   filter :surname
   filter :email
   filter :phone
-  filter :login
+  filter :username
   filter :description
   filter :trust_level
   filter :banned
@@ -42,7 +42,7 @@ ActiveAdmin.register Volunteer do
       f.input :password
       f.input :password_confirmation
       f.input :phone
-      f.input :login
+      f.input :username
       f.input :description
       f.input :trust_level
       f.input :banned
@@ -58,7 +58,7 @@ ActiveAdmin.register Volunteer do
       row :surname
       row :email
       row :phone
-      row :login
+      row :username
       row :description
       row :trust_level
       row :banned
