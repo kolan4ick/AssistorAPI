@@ -117,7 +117,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_104313) do
     t.string "phone"
     t.string "username"
     t.string "name"
-    t.boolean "verification"
+    t.boolean "verification", default: false
     t.integer "trust_level"
     t.string "description"
     t.string "surname"
