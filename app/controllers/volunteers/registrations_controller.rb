@@ -23,12 +23,12 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       else
         set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
         expire_data_after_sign_in!
-        render status: 400, json: { status: "error", message: "User not created", data: resource }
+        render status: 400, json: { status: "error", message: "Volunteer not created", data: resource }
       end
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render status: 400, json: { status: "error", message: "User not created", data: resource }
+      render status: 400, json: { status: "error", message: "Volunteer not created", data: resource }
     end
   end
 
