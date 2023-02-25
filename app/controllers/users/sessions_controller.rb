@@ -30,11 +30,22 @@ class Users::SessionsController < Devise::SessionsController
       end
     end
 
-    self.resource = warden.authenticate!(auth_options)
-    set_flash_message!(:notice, :signed_in)
-    sign_in(resource_name, resource)
-    yield resource if block_given?
-    render json: resource
+    begin
+      self.resource = warden.authenticate(auth_options)
+      set_flash_message!(:notice, :signed_in)
+      sign_in(resource_name, resource)
+      yield resource if block_given?
+      render json: resource
+    rescue
+      case warden.message
+      when :not_found_in_database
+        render json: { error_message: "Такого логіну немає в базі даних!" }, status: 400
+      when :invalid
+        render json: { error_message: "Невірний пароль!" }, status: 400
+      else
+        render json: { error_message: "Сталась невідома помилка!" }, status: 400
+      end
+    end
   end
 
   # DELETE /resource/sign_out

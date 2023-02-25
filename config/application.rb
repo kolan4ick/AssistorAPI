@@ -22,6 +22,14 @@ module AssistorAPI
 
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Locales
+    I18n.available_locales = [:uk]
+    config.before_configuration do
+      I18n.load_path += Dir[Rails.root.join('config', 'locales', '*.{rb,yml}').to_s]
+      I18n.default_locale = :uk
+      I18n.reload!
+    end
+
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
