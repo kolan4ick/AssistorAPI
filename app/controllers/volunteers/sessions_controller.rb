@@ -18,6 +18,12 @@ class Volunteers::SessionsController < Devise::SessionsController
     if params[:auth_token].present?
       pp volunteer = Volunteer.find_by(authentication_token: params[:auth_token])
       if volunteer.present?
+        # check if token is expired
+        if volunteer.expired_authentication_token?
+          volunteer.reset_authentication_token!
+          return render json: {error: true}, status: 401
+        end
+
         sign_in(volunteer)
         render json: volunteer
         return

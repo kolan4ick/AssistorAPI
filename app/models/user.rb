@@ -22,4 +22,13 @@ class User < ApplicationRecord
   end
 
   validates :username, presence: true, uniqueness: { case_sensitive: false }
+
+  def renew_authentication_token!
+    self.update(authentication_token: nil)
+    self.ensure_authentication_token
+  end
+
+  def expired_authentication_token?
+    DateTime.now > (authentication_token_created_at + token_expires_in)
+  end
 end

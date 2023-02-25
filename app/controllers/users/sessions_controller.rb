@@ -16,8 +16,14 @@ class Users::SessionsController < Devise::SessionsController
 
     # add sign in by token
     if params[:auth_token].present?
-      pp user = User.find_by(authentication_token: params[:auth_token])
+      user = User.find_by_authentication_token(params[:auth_token])
       if user.present?
+        # check if token is expired
+        if user.expired_authentication_token?
+          user.reset_authentication_token!
+          return render json: { error: true }, status: 401
+        end
+
         sign_in(user)
         render json: user
         return
@@ -28,7 +34,7 @@ class Users::SessionsController < Devise::SessionsController
     set_flash_message!(:notice, :signed_in)
     sign_in(resource_name, resource)
     yield resource if block_given?
-    render json: current_user
+    render json: resource
   end
 
   # DELETE /resource/sign_out

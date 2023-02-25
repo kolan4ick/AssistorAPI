@@ -101,7 +101,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_104313) do
     t.string "name"
     t.string "surname"
     t.string "username"
-    t.string "authentication_token"
+    t.text "authentication_token"
+    t.datetime "authentication_token_created_at"
+    t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -121,8 +123,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_104313) do
     t.integer "trust_level"
     t.string "description"
     t.string "surname"
-    t.string "authentication_token"
+    t.text "authentication_token"
+    t.datetime "authentication_token_created_at"
     t.boolean "banned", default: false
+    t.index ["authentication_token"], name: "index_volunteers_on_authentication_token", unique: true
     t.index ["email"], name: "index_volunteers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_volunteers_on_reset_password_token", unique: true
   end
