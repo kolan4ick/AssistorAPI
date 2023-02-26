@@ -8,6 +8,8 @@ class Volunteer < ApplicationRecord
 
   has_one_attached :avatar
 
+  has_many_attached :documents
+
   before_save :ensure_authentication_token
 
   attr_writer :login

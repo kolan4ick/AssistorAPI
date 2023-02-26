@@ -28,7 +28,7 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render status: 400, json: { status: "error", error_message: "#{resource.errors.full_messages.join(", ")}}" }
+      render status: 400, json: { status: "error", error_message: "#{resource.errors.full_messages.join(", ")}" }
     end
   end
 
