@@ -225,6 +225,7 @@ uk:
         description: "Опис"
         phone: "Телефон"
         avatar: "Аватар"
+        documents: "Документи"
         created_at: "Створено"
         updated_at: "Оновлено"
       gathering_category:
