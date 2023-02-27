@@ -1,6 +1,6 @@
 ActiveAdmin.register Volunteer do
 
-  permit_params :name, :surname, :email, :password, :password_confirmation, :phone,
+  permit_params :name, :surname, :email, :phone,
                 :username, :description, :trust_level, :verification, :created_at,
                 :updated_at, :avatar, :banned, documents: []
 
@@ -39,8 +39,6 @@ ActiveAdmin.register Volunteer do
       f.input :name
       f.input :surname
       f.input :email
-      f.input :password
-      f.input :password_confirmation
       f.input :phone
       f.input :username
       f.input :description
@@ -77,6 +75,32 @@ ActiveAdmin.register Volunteer do
       end
       row :created_at
       row :updated_at
+    end
+  end
+
+  controller do
+    def update
+      changed_to_verified = params[:volunteer][:verification] == '1' && Volunteer.find(params[:id]).verification == false
+
+      @volunteer = Volunteer.find(params[:id])
+
+      if @volunteer.update(volunteer_params)
+        # If verification status was changed to true, send verification email
+        if changed_to_verified
+          VolunteerMailer.verification_email(Volunteer.find(params[:id])).deliver_now
+        end
+        redirect_to admin_volunteer_path(@volunteer), notice: 'Волонтер успішно оновлений!'
+      else
+        render :edit
+      end
+    end
+
+    private
+
+    def volunteer_params
+      params.require(:volunteer).permit(:name, :surname, :email, :phone,
+                                        :username, :description, :trust_level, :verification, :created_at,
+                                        :updated_at, :avatar, :banned, documents: [])
     end
   end
 end

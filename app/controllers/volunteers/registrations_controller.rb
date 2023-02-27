@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class Volunteers::RegistrationsController < Devise::RegistrationsController
+  require 'mailgun-ruby' # for transactional emails
+
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
+
   protect_from_forgery with: :null_session
   # GET /resource/sign_up
   def new
@@ -19,6 +22,10 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
         sign_up(resource_name, resource)
+
+        # Send email to volunteer
+        VolunteerMailer.registration_email(resource)
+
         render json: resource
       else
         set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
