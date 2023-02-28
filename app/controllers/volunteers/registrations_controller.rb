@@ -30,7 +30,7 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       end
 
       # Send email to volunteer
-      VolunteerMailer.registration_email(resource)
+      VolunteerMailer.registration_email(resource).deliver_now
     else
       clean_up_passwords resource
       set_minimum_password_length
