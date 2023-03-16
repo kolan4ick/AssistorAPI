@@ -1,5 +1,5 @@
 ActiveAdmin.register Gathering do
-  permit_params :title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification, :link, :volunteer_id, photos: [], finished_photos: []
+  permit_params :title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification, :link, :creator_id, photos: [], finished_photos: []
 
   index do
     selectable_column
@@ -13,7 +13,7 @@ ActiveAdmin.register Gathering do
     column :ended
     column :verification
     column :link
-    column :volunteer_id
+    column :creator_id
     column :photos
     column :finished_photos
     actions
@@ -28,7 +28,7 @@ ActiveAdmin.register Gathering do
   filter :ended
   filter :verification
   filter :link
-  filter :volunteer_id
+  filter :creator_id
 
   form do |f|
     f.inputs "Gathering Details" do
@@ -41,7 +41,7 @@ ActiveAdmin.register Gathering do
       f.input :ended
       f.input :verification
       f.input :link
-      f.input :volunteer
+      f.input :creator_id, as: :select, collection: Volunteer.all.map { |u| ["#{u.name} #{u.surname}", u.id] }
       f.input :photos, as: :file, input_html: { multiple: true, accept: 'image/*' }
       f.input :finished_photos, as: :file, input_html: { multiple: true, accept: 'image/*' }
     end
@@ -59,7 +59,9 @@ ActiveAdmin.register Gathering do
       row :ended
       row :verification
       row :link
-      row :volunteer
+      row :creator do |gathering|
+        link_to "#{gathering.creator.name} #{gathering.creator.surname}", admin_volunteer_path(gathering.creator)
+      end
       row :photos do |gathering|
         div do
           gathering.photos.each do |photo|

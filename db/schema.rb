@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_16_104313) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_16_202752) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,6 +75,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_104313) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "gathering_user_reviews", force: :cascade do |t|
+    t.integer "gathering_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "gathering_volunteer_reviews", force: :cascade do |t|
+    t.integer "gathering_id"
+    t.integer "volunteer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "gatherings", force: :cascade do |t|
     t.string "title"
     t.string "description"
@@ -86,7 +100,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_104313) do
     t.string "link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "volunteer_id"
+    t.integer "creator_id"
     t.integer "gathering_category_id"
   end
 

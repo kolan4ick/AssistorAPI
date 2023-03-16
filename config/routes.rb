@@ -6,7 +6,10 @@ Rails.application.routes.draw do
       devise_for :volunteers, controllers: { sessions: "volunteers/sessions", registrations: 'volunteers/registrations' }, singular: "volunteer"
       devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations" }, singular: "user"
       resources :gathering_categories
-      resources :gatherings
+      resources :gatherings do
+        post :create_review, to: 'gatherings#create_review'
+        get :reviewed, to: 'gatherings#reviewed', on: :collection
+      end
       get :filter_gatherings, to: 'gatherings#filter_gatherings'
     end
   end

@@ -4,7 +4,10 @@ class Volunteer < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :token_authenticatable, authentication_keys: [:login]
 
-  has_many :gatherings
+  has_many :created_gatherings, class_name: 'Gathering', foreign_key: 'creator_id'
+
+  has_many :gathering_volunteer_reviews
+  has_many :gatherings, through: :gathering_volunteer_reviews
 
   has_one_attached :avatar
 

@@ -6,6 +6,9 @@ class User < ApplicationRecord
 
   before_save :ensure_authentication_token
 
+  has_many :gathering_user_reviews
+  has_many :gatherings, through: :gathering_user_reviews
+  
   attr_writer :login
 
   def login

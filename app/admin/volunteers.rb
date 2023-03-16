@@ -2,7 +2,7 @@ ActiveAdmin.register Volunteer do
 
   permit_params :name, :surname, :email, :phone,
                 :username, :description, :trust_level, :verification, :created_at,
-                :updated_at, :avatar, :banned, documents: []
+                :updated_at, :avatar, :banned, documents: [], created_gatherings: []
 
   index do
     selectable_column
@@ -73,6 +73,14 @@ ActiveAdmin.register Volunteer do
           end
         end
       end
+      row :created_gatherings do
+        div do
+          volunteer.created_gatherings.each do |gathering|
+            span link_to gathering.title, admin_gathering_path(gathering)
+          end
+        end
+      end
+
       row :created_at
       row :updated_at
     end
