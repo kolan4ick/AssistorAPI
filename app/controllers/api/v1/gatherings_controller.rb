@@ -88,14 +88,14 @@ class Api::V1::GatheringsController < ApiController
 
   def reviewed
     if current_user
-      @gatherings = GatheringUserReview.where(user_id: current_user.id).map(&:gathering)
+      @gatherings = current_user.gatherings.with_attached_photos.with_attached_finished_photos
     elsif current_volunteer
-      @gatherings = GatheringVolunteerReview.where(volunteer_id: current_volunteer.id).map(&:gathering)
+      @gatherings = current_volunteer.gatherings.with_attached_photos.with_attached_finished_photos
     else
       render json: { error: "Ви не авторизовані" }, status: 401
       return
     end
-    
+
     render json: @gatherings
   end
 

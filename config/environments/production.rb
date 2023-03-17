@@ -30,6 +30,8 @@ Rails.application.configure do
     api_host: 'api.eu.mailgun.net'
   }
 
+  config.action_mailer.default_url_options = { host: 'yuryshynets.me' }
+
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
