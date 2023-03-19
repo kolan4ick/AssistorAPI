@@ -1,7 +1,7 @@
 class Api::V1::GatheringsController < ApiController
   include GatheringHelper
 
-  before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_review]
+  before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_view, :viewed]
   before_action :set_gathering, only: [:show, :update, :destroy]
   before_action :authenticate_volunteer!, only: [:create, :update, :destroy]
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_19_204509) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_19_221643) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_204509) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "favourite_gatherings", force: :cascade do |t|
+    t.integer "gathering_id"
+    t.string "favouritable_type", null: false
+    t.bigint "favouritable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["favouritable_type", "favouritable_id"], name: "index_favourite_gatherings_on_favouritable"
   end
 
   create_table "gathering_categories", force: :cascade do |t|

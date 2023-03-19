@@ -9,6 +9,9 @@ class Volunteer < ApplicationRecord
   has_many :gathering_views, as: :viewer
   has_many :viewed_gatherings, through: :gathering_views, source: :gathering
 
+  has_many :favourite_gatherings, as: :favouritable
+  has_many :favourites, through: :favourite_gatherings, source: :gathering
+
   has_one_attached :avatar
 
   has_many_attached :documents

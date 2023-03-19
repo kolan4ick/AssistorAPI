@@ -10,6 +10,9 @@ Rails.application.routes.draw do
         post :create_view, to: 'gatherings#create_view'
         get :viewed, to: 'gatherings#viewed', on: :collection
       end
+      resources :favourite_gatherings, only: [:index, :create] do
+        delete :destroy, to: 'favourite_gatherings#destroy', on: :collection
+      end
       get :filter_gatherings, to: 'gatherings#filter_gatherings'
     end
   end
