@@ -6,8 +6,8 @@ class Volunteer < ApplicationRecord
 
   has_many :created_gatherings, class_name: 'Gathering', foreign_key: 'creator_id'
 
-  has_many :gathering_volunteer_reviews
-  has_many :gatherings, through: :gathering_volunteer_reviews
+  has_many :gathering_views, as: :viewer
+  has_many :viewed_gatherings, through: :gathering_views, source: :gathering
 
   has_one_attached :avatar
 

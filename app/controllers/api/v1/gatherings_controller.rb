@@ -51,46 +51,25 @@ class Api::V1::GatheringsController < ApiController
     render json: @filtered_gatherings
   end
 
-  def create_review
+  def create_view
     @gathering = Gathering.find(params[:gathering_id])
 
-    if current_user
-      # Check if user has already reviewed this gathering
-      unless GatheringUserReview.where(gathering_id: @gathering.id, user_id: current_user.id).exists?
-        @gathering_user_review = GatheringUserReview.new(gathering_id: @gathering.id, user_id: current_user.id)
+    @viewer = current_user || current_volunteer
 
-        if @gathering_user_review.save
-          render json: { message: "Перегляд створено" }, status: :created
-        else
-          render json: @gathering_user_review.errors, status: :unprocessable_entity
-        end
-        return
-      end
-    elsif current_volunteer
-      # Check if volunteer has already reviewed this gathering
-      unless GatheringVolunteerReview.where(gathering_id: @gathering.id, volunteer_id: current_volunteer.id).exists?
-        @gathering_volunteer_review = GatheringVolunteerReview.new(gathering_id: @gathering.id, volunteer_id: current_volunteer.id)
-
-        if @gathering_volunteer_review.save
-          render json: { message: "Перегляд створено" }, status: :created
-        else
-          render json: @gathering_volunteer_review.errors, status: :unprocessable_entity
-        end
-        return
-      end
-    else
-      render json: { error: "Ви не авторизовані" }, status: 401
+    unless @viewer.viewed_gatherings.include?(@gathering)
+      @viewer.viewed_gatherings << @gathering
+      render json: { message: "Перегляд створено" }, status: :created
       return
     end
 
     render json: { message: "Збір уже переглянуто" }, status: 200
   end
 
-  def reviewed
+  def viewed
     if current_user
-      @gatherings = current_user.gatherings.with_attached_photos.with_attached_finished_photos
+      @gatherings = current_user.viewed_gatherings.with_attached_photos.with_attached_finished_photos
     elsif current_volunteer
-      @gatherings = current_volunteer.gatherings.with_attached_photos.with_attached_finished_photos
+      @gatherings = current_volunteer.viewed_gatherings.with_attached_photos.with_attached_finished_photos
     else
       render json: { error: "Ви не авторизовані" }, status: 401
       return

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_16_202752) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_19_204509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,18 +75,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_202752) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "gathering_user_reviews", force: :cascade do |t|
+  create_table "gathering_views", force: :cascade do |t|
     t.integer "gathering_id"
-    t.integer "user_id"
+    t.string "viewer_type", null: false
+    t.bigint "viewer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "gathering_volunteer_reviews", force: :cascade do |t|
-    t.integer "gathering_id"
-    t.integer "volunteer_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["viewer_type", "viewer_id"], name: "index_gathering_views_on_viewer"
   end
 
   create_table "gatherings", force: :cascade do |t|
