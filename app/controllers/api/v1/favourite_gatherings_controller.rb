@@ -6,7 +6,7 @@ class Api::V1::FavouriteGatheringsController < ApiController
 
     @gatherings = @favouritable.favourites.with_attached_photos.with_attached_finished_photos
 
-    render json: @gatherings
+    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def create

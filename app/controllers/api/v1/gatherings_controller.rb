@@ -9,7 +9,9 @@ class Api::V1::GatheringsController < ApiController
   def index
     @gatherings = Gathering.all
 
-    render json: @gatherings
+    @favouritable = current_user || current_volunteer
+
+    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def show
@@ -75,7 +77,9 @@ class Api::V1::GatheringsController < ApiController
       return
     end
 
-    render json: @gatherings
+    @favouritable = current_user || current_volunteer
+
+    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   private
