@@ -17,6 +17,6 @@ class VolunteerSerializer < ActiveModel::Serializer
   end
 
   def avatar
-    rails_blob_url(object.avatar, expires_in: 10.minutes, disposition: 'inline', signed: true) if object.avatar.attached?
+    rails_blob_url(object.avatar.variant(resize_to_limit: [200, 200]), expires_in: 10.minutes, disposition: 'inline', signed: true) if object.avatar.attached?
   end
 end

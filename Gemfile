@@ -52,7 +52,7 @@ gem 'mailgun-ruby', '~>1.2.8'
 gem 'active_model_serializers'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem "rack-cors"
