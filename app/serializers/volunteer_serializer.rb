@@ -3,13 +3,17 @@
 class VolunteerSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
 
-  attributes :id, :email, :name, :surname, :username, :avatar, :viewed_count, :description,
+  attributes :id, :email, :name, :surname, :username, :avatar, :viewed_count, :created_gatherings_count, :description,
              :created_at, :updated_at, :phone, :verification, :authentication_token, :banned, :trust_level
 
 
 
   def viewed_count
     object.viewed_gatherings.count
+  end
+
+  def created_gatherings_count
+    object.created_gatherings.count
   end
 
   def avatar
