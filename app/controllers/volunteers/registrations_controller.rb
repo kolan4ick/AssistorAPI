@@ -54,11 +54,11 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       set_flash_message_for_update(resource, prev_unconfirmed_email)
       bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
 
-      render json: { status: "success", message: "User updated successfully", data: resource }
+      render json: { status: "success", message: "Користувача успішно оновлено", data: resource }, status: 200
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render json: { status: "error", message: "User not updated", data: resource }
+      render json: { status: "error", message: resource_updated.errors, data: resource }, status: 400
     end
   end
 

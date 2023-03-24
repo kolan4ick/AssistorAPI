@@ -52,7 +52,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render json: { status: "error", message: "User not updated", data: resource }
+      render json: { status: "error", message: resource.errors.map { |error| error.full_message }.join(','), data: resource }
     end
   end
 
@@ -71,6 +71,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   protected
+
+  def update_resource(resource, params)
+    resource.update_without_password(params)
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
