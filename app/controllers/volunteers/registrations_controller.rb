@@ -54,11 +54,11 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       set_flash_message_for_update(resource, prev_unconfirmed_email)
       bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
 
-      render json: { status: "success", message: "Користувача успішно оновлено", data: resource }, status: 200
+      render json: { status: "success", message: "Волонтера успішно оновлено", data: resource }, status: 200
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render json: { status: "error", message: resource_updated.errors, data: resource }, status: 400
+      render json: { status: "error", message: resource.errors.map { |error| error.full_message }.join(','), data: resource }, status: 400
     end
   end
 
@@ -76,7 +76,11 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
+
+  def update_resource(resource, params)
+    resource.update_without_password(params)
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
