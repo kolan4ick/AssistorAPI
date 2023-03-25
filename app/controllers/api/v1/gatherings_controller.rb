@@ -1,7 +1,7 @@
 class Api::V1::GatheringsController < ApiController
   include GatheringHelper
 
-  before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_view, :viewed]
+  before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_view, :viewed, :created_by_volunteer]
   before_action :set_gathering, only: [:show, :update, :destroy]
   before_action :authenticate_volunteer!, only: [:create, :update, :destroy]
 
@@ -76,6 +76,15 @@ class Api::V1::GatheringsController < ApiController
       render json: { error: "Ви не авторизовані" }, status: 401
       return
     end
+
+    @favouritable = current_user || current_volunteer
+
+    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
+  end
+
+  def created_by_volunteer
+    @volunteer = Volunteer.find(params[:volunteer_id])
+    @gatherings = @volunteer.created_gatherings.with_attached_photos.with_attached_finished_photos
 
     @favouritable = current_user || current_volunteer
 

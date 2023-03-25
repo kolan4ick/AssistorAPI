@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :gatherings do
         post :create_view, to: 'gatherings#create_view'
         get :viewed, to: 'gatherings#viewed', on: :collection
+        get 'created_by_volunteer/:volunteer_id', to: 'gatherings#created_by_volunteer', on: :collection
       end
       resources :favourite_gatherings, only: [:index, :create] do
         delete :destroy, to: 'favourite_gatherings#destroy', on: :collection
