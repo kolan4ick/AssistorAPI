@@ -24,6 +24,10 @@ class VolunteerSerializer < ActiveModel::Serializer
     object.authentication_token if object == scope
   end
 
+  def username
+    object.username if object == scope
+  end
+
   def created_at
     object.created_at.strftime("%d/%m/%Y")
   end
