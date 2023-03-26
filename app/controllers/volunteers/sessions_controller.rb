@@ -25,7 +25,7 @@ class Volunteers::SessionsController < Devise::SessionsController
         end
 
         sign_in(volunteer)
-        render json: volunteer
+        render json: volunteer, each_serializer: VolunteerSerializer, scope: volunteer
         return
       end
     end
@@ -34,7 +34,7 @@ class Volunteers::SessionsController < Devise::SessionsController
     set_flash_message!(:notice, :signed_in)
     sign_in(resource_name, resource)
     yield resource if block_given?
-    render json: resource
+    render json: resource, each_serializer: VolunteerSerializer, scope: resource
   rescue
     case warden.message
     when :not_found_in_database

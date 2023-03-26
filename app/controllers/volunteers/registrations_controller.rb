@@ -22,11 +22,11 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
         sign_up(resource_name, resource)
-        render json: resource
+        render json: resource, each_serializer: VolunteerSerializer, scope: resource
       else
         set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
         expire_data_after_sign_in!
-        render json: resource
+        render json: resource, each_serializer: VolunteerSerializer, scope: resource
       end
 
       # Send email to volunteer
@@ -54,11 +54,11 @@ class Volunteers::RegistrationsController < Devise::RegistrationsController
       set_flash_message_for_update(resource, prev_unconfirmed_email)
       bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
 
-      render json: { status: "success", message: "Волонтера успішно оновлено", data: resource }, status: 200
+      render json: resource, each_serializer: VolunteerSerializer, scope: resource, status: 200
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render json: { status: "error", message: resource.errors.map { |error| error.full_message }.join(','), data: resource }, status: 400
+      render json: { status: "error", error_message: "#{resource.errors.full_messages.join(", ")}" }, status: 400
     end
   end
 
