@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :favourite_gatherings, only: [:index, :create] do
         delete :destroy, to: 'favourite_gatherings#destroy', on: :collection
       end
+      resources :volunteers, only: [:index]
       get :filter_gatherings, to: 'gatherings#filter_gatherings'
     end
   end

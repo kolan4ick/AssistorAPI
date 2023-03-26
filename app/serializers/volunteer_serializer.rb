@@ -19,4 +19,16 @@ class VolunteerSerializer < ActiveModel::Serializer
   def avatar
     rails_blob_url(object.avatar.variant(resize_to_limit: [200, 200]), disposition: 'inline', signed: true) if object.avatar.attached?
   end
+
+  def authentication_token
+    object.authentication_token if object == scope
+  end
+
+  def created_at
+    object.created_at.strftime("%d/%m/%Y")
+  end
+
+  def updated_at
+    object.updated_at.strftime("%d/%m/%Y")
+  end
 end
