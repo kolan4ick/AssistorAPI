@@ -18,11 +18,9 @@ class Users::SessionsController < Devise::SessionsController
     if params[:auth_token].present?
       user = User.find_by_authentication_token(params[:auth_token])
       if user.present?
-        # check if token is expired
-        if user.expired_authentication_token?
-          user.reset_authentication_token!
-          return render json: { error: true }, status: 401
-        end
+
+        # reset authentication_token if current token is expired
+        user.reset_authentication_token! if user.expired_authentication_token?
 
         sign_in(user)
         render json: user
@@ -34,6 +32,10 @@ class Users::SessionsController < Devise::SessionsController
       self.resource = warden.authenticate(auth_options)
       set_flash_message!(:notice, :signed_in)
       sign_in(resource_name, resource)
+
+      # reset authentication_token if current token is expired
+      resource.reset_authentication_token! if resource.expired_authentication_token?
+
       yield resource if block_given?
       render json: resource
     rescue

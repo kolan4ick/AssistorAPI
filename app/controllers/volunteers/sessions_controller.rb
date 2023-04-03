@@ -18,11 +18,8 @@ class Volunteers::SessionsController < Devise::SessionsController
     if params[:auth_token].present?
       pp volunteer = Volunteer.find_by(authentication_token: params[:auth_token])
       if volunteer.present?
-        # check if token is expired
-        if volunteer.expired_authentication_token?
-          volunteer.reset_authentication_token!
-          return render json: { error: true }, status: 401
-        end
+        # reset authentication_token if current token is expired
+        volunteer.reset_authentication_token! if volunteer.expired_authentication_token?
 
         sign_in(volunteer)
         render json: volunteer, each_serializer: VolunteerSerializer, scope: volunteer
@@ -30,19 +27,25 @@ class Volunteers::SessionsController < Devise::SessionsController
       end
     end
 
-    self.resource = warden.authenticate(auth_options)
-    set_flash_message!(:notice, :signed_in)
-    sign_in(resource_name, resource)
-    yield resource if block_given?
-    render json: resource, each_serializer: VolunteerSerializer, scope: resource
-  rescue
-    case warden.message
-    when :not_found_in_database
-      render json: { error_message: "Такого логіну немає в базі даних!" }, status: 400
-    when :invalid
-      render json: { error_message: "Невірний пароль!" }, status: 400
-    else
-      render json: { error_message: "Сталась невідома помилка!" }, status: 400
+    begin
+      self.resource = warden.authenticate(auth_options)
+      set_flash_message!(:notice, :signed_in)
+      sign_in(resource_name, resource)
+
+      # reset authentication_token if current token is expired
+      resource.reset_authentication_token! if resource.expired_authentication_token?
+
+      yield resource if block_given?
+      render json: resource, each_serializer: VolunteerSerializer, scope: resource
+    rescue
+      case warden.message
+      when :not_found_in_database
+        render json: { error_message: "Такого логіну немає в базі даних!" }, status: 400
+      when :invalid
+        render json: { error_message: "Невірний пароль!" }, status: 400
+      else
+        render json: { error_message: "Сталась невідома помилка!" }, status: 400
+      end
     end
   end
 
