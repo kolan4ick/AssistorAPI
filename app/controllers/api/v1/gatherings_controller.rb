@@ -110,6 +110,6 @@ class Api::V1::GatheringsController < ApiController
 
   # Only allow a trusted parameter "white list" through.
   def gathering_params
-    params.require(:gathering).permit(:title, :description, :sum, :start, :end, :ended, :link, :gathering_category_id)
+    params.require(:gathering).permit(:title, :description, :sum, :start, :end, :ended, :link, :gathering_category_id, photos: [], finished_photos: [])
   end
 end
