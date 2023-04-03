@@ -4,6 +4,7 @@ class Api::V1::GatheringsController < ApiController
   before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_view, :viewed, :created_by_volunteer]
   before_action :set_gathering, only: [:show, :update, :destroy]
   before_action :authenticate_volunteer!, only: [:create, :update, :destroy]
+  before_action :check_volunteer!, only: [:update, :destroy]
 
   # GET /gatherings
   def index
@@ -21,6 +22,9 @@ class Api::V1::GatheringsController < ApiController
   # POST /gatherings
   def create
     @gathering = Gathering.new(gathering_params)
+
+    # set creator to current volunteer
+    @gathering.creator = current_volunteer
 
     if @gathering.save
       render json: @gathering, status: :created, location: @gathering
@@ -93,6 +97,12 @@ class Api::V1::GatheringsController < ApiController
 
   private
 
+  def check_volunteer!
+    unless current_volunteer == @gathering.creator
+      raise StandardError.new("Ви не маєте прав редагувати цей збір")
+    end
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_gathering
     @gathering = Gathering.find(params[:id])
@@ -100,6 +110,6 @@ class Api::V1::GatheringsController < ApiController
 
   # Only allow a trusted parameter "white list" through.
   def gathering_params
-    params.require(:gathering).permit(:title, :description, :sum, :start, :end, :ended, :link, :volunteer_id, :gathering_category_id)
+    params.require(:gathering).permit(:title, :description, :sum, :start, :end, :ended, :link, :gathering_category_id)
   end
 end
