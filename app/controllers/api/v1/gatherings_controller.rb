@@ -27,7 +27,7 @@ class Api::V1::GatheringsController < ApiController
     @gathering.creator = current_volunteer
 
     if @gathering.save
-      render json: @gathering, status: :created, location: @gathering
+      render json: @gathering, status: :created, each_serializer: GatheringSerializer, scope: current_volunteer
     else
       render json: @gathering.errors, status: :unprocessable_entity
     end
