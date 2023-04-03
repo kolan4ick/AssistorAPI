@@ -147,26 +147,32 @@ uk:
         one: "Користувач"
         few: "Користувачі"
         other: "Користувачі"
+        many: "Користувачі"
       volunteer:
         one: "Волонтер"
         few: "Волонтери"
         other: "Волонтери"
+        many: "Волонтери"
       admin_user:
         one: "Адміністратор"
         few: "Адміністратори"
         other: "Адміністратори"
+        many: "Адміністратори"
       gathering_category:
         one: "Категорія збору"
         few: "Категорії зборів"
         other: "Категорії зборів"
+        many: "Категорії зборів"
       gathering:
         one: "Збір"
         few: "Збори"
         other: "Збори"
+        many: "Збори"
       comment:
         one: "Коментар"
         few: "Коментарі"
         other: "Коментарі"
+        many: "Коментарі"
     attributes:
       admin_user:
         id: "ID"
