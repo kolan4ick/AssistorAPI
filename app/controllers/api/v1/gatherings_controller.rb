@@ -3,7 +3,7 @@ class Api::V1::GatheringsController < ApiController
 
   before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_view, :viewed, :created_by_volunteer]
   before_action :set_gathering, only: [:show, :update, :destroy]
-  before_action :authenticate_volunteer!, only: [:create, :update, :destroy]
+  before_action :volunteer_authenticate!, only: [:create, :update, :destroy]
   before_action :check_volunteer!, only: [:update, :destroy]
 
   # GET /gatherings
@@ -21,6 +21,12 @@ class Api::V1::GatheringsController < ApiController
 
   # POST /gatherings
   def create
+    # If volunteer is not verified, return error
+    if current_volunteer.verification == false
+      render json: { error: "Ваш аккаунт не верифіковано" }, status: 401
+      return
+    end
+
     @gathering = Gathering.new(gathering_params)
 
     # set creator to current volunteer
