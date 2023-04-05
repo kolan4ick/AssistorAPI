@@ -50,7 +50,8 @@ class Api::V1::GatheringsController < ApiController
 
   # DELETE /gatherings/1
   def destroy
-    @gathering.destroy
+    @gathering.destroy!
+    render json: { message: "Збір видалено" }, status: 200
   end
 
   def filter_gatherings
