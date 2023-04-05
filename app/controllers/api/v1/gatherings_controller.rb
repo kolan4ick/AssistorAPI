@@ -42,7 +42,7 @@ class Api::V1::GatheringsController < ApiController
   # PATCH/PUT /gatherings/1
   def update
     if @gathering.update(gathering_params)
-      render json: @gathering
+      render json: @gathering, each_serializer: GatheringSerializer, scope: current_volunteer, status: 200
     else
       render json: @gathering.errors, status: :unprocessable_entity
     end
