@@ -6,8 +6,8 @@ class CreateGatherings < ActiveRecord::Migration[7.0]
       t.float :sum
       t.datetime :start
       t.datetime :end
-      t.boolean :ended
-      t.boolean :verification
+      t.boolean :ended, default: false
+      t.boolean :verification, default: false
       t.string :link
 
       t.timestamps

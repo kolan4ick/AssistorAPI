@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
+  $per_page = 10
+
   protected
 
   def devise_parameter_sanitizer

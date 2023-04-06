@@ -2,9 +2,11 @@ class Api::V1::FavouriteGatheringsController < ApiController
   before_action :authenticate!, only: [:index, :create, :destroy]
 
   def index
+    @page = (params[:page] || 1).to_i
+
     @favouritable = current_user || current_volunteer
 
-    @gatherings = @favouritable.favourites.with_attached_photos.with_attached_finished_photos
+    @gatherings = @favouritable.favourites.offset(($per_page * @page) - $per_page).limit($per_page)
 
     render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end

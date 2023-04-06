@@ -8,10 +8,30 @@ class Api::V1::GatheringsController < ApiController
 
   # GET /gatherings
   def index
-    @gatherings = Gathering.all
+    @page = (params[:page] || 1).to_i
+
+    @gatherings = Gathering.offset(($per_page * @page) - $per_page).limit($per_page)
 
     @favouritable = current_user || current_volunteer
 
+    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
+  end
+
+  def search
+    @page = (params[:page] || 1).to_i
+
+    @favouritable = current_user || current_volunteer
+
+    # Get all gatherings
+    @gatherings = Gathering.all
+
+    # Filter gatherings by filter options if they are present
+    @gatherings = filtering(@gatherings)
+
+    # Search gatherings by search query if it is present
+    @gatherings = searching(@gatherings)
+
+    @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
     render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end
 
@@ -54,16 +74,6 @@ class Api::V1::GatheringsController < ApiController
     render json: { message: "Збір видалено" }, status: 200
   end
 
-  def filter_gatherings
-    @gatherings = Gathering.all
-
-    @filtered_gatherings = filtering(@gatherings)
-
-    @filtered_gatherings = sorting(@filtered_gatherings)
-
-    render json: @filtered_gatherings
-  end
-
   def create_view
     @gathering = Gathering.find(params[:gathering_id])
 
@@ -80,22 +90,27 @@ class Api::V1::GatheringsController < ApiController
 
   def viewed
     if current_user
-      @gatherings = current_user.viewed_gatherings.with_attached_photos.with_attached_finished_photos
+      @gatherings = current_user.viewed_gatherings
     elsif current_volunteer
-      @gatherings = current_volunteer.viewed_gatherings.with_attached_photos.with_attached_finished_photos
+      @gatherings = current_volunteer.viewed_gatherings
     else
       render json: { error: "Ви не авторизовані" }, status: 401
       return
     end
+    @page = (params[:page] || 1).to_i
 
     @favouritable = current_user || current_volunteer
+
+    @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
 
     render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def created_by_volunteer
+    @page = (params[:page] || 1).to_i
+
     @volunteer = Volunteer.find(params[:volunteer_id])
-    @gatherings = @volunteer.created_gatherings.with_attached_photos.with_attached_finished_photos
+    @gatherings = @volunteer.created_gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
 
     @favouritable = current_user || current_volunteer
 
@@ -113,6 +128,54 @@ class Api::V1::GatheringsController < ApiController
   # Use callbacks to share common setup or constraints between actions.
   def set_gathering
     @gathering = Gathering.find(params[:id])
+  end
+
+  def filtering(gatherings)
+    @gatherings = gatherings
+
+    filter = params[:filter]
+
+    if filter
+      if filter[:categories]
+        categories = filter[:categories].split(",")
+        @gatherings = @gatherings.where(gathering_category_id: categories)
+      end
+
+      if true?(filter[:active])
+        @gatherings = @gatherings.where(ended: false)
+      end
+
+      if true?(filter[:not_active])
+        @gatherings = @gatherings.where(ended: true)
+      end
+
+      if true?(filter[:new])
+        @gatherings = @gatherings.where("created_at >= ?", 2.week.ago)
+      end
+    end
+
+    @gatherings
+  end
+
+  def true?(obj)
+    obj.to_s.downcase == "true"
+  end
+
+  def searching(gatherings)
+    @gatherings = gatherings
+
+    query = params[:query].downcase
+
+    if query
+      # Search gathering by title, description, sum and by gathering category title, and by volunteer name
+      @gatherings = @gatherings.where("LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR CAST(sum AS TEXT) LIKE ? OR gathering_category_id
+                                       IN (SELECT id FROM gathering_categories WHERE LOWER(title) LIKE ?)
+                                       OR creator_id IN (SELECT id FROM volunteers WHERE LOWER(name) LIKE ?)",
+                                      "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%")
+
+    end
+
+    @gatherings
   end
 
   # Only allow a trusted parameter "white list" through.
