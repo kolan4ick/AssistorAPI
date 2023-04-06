@@ -26,6 +26,8 @@ gem "activeadmin"
 
 gem 'devise-token_authenticatable'
 
+gem "faker"
+
 gem 'whenever', require: false
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"

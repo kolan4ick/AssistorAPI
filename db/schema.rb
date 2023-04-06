@@ -99,8 +99,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_221643) do
     t.float "sum"
     t.datetime "start"
     t.datetime "end"
-    t.boolean "ended"
-    t.boolean "verification"
+    t.boolean "ended", default: false
+    t.boolean "verification", default: false
     t.string "link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
