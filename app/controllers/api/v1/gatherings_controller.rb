@@ -143,20 +143,20 @@ class Api::V1::GatheringsController < ApiController
         end
 
         if true?(filter[:active])
-          @gatherings = @gatherings.where(ended: false)
+          @gatherings = @gatherings + @gatherings.where(ended: false)
         end
 
         if true?(filter[:not_active])
-          @gatherings = @gatherings.where(ended: true)
+          @gatherings = @gatherings + @gatherings.where(ended: true)
         end
 
         if true?(filter[:new])
-          @gatherings = @gatherings.where("created_at >= ?", 2.week.ago)
+          @gatherings = @gatherings + @gatherings.where("created_at >= ?", 2.week.ago)
         end
       end
     end
 
-    @gatherings
+    @gatherings.uniq
   end
 
   def true?(obj)
