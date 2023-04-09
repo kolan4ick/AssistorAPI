@@ -25,10 +25,10 @@ class Api::V1::GatheringsController < ApiController
     # Get all gatherings
     @gatherings = Gathering.all
 
-    # Filter gatherings by filter options if they are present
+    # Filter gatherings by filter options
     @gatherings = filtering(@gatherings)
 
-    # Search gatherings by search query if it is present
+    # Search gatherings by search query
     @gatherings = searching(@gatherings)
 
     @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
@@ -133,24 +133,26 @@ class Api::V1::GatheringsController < ApiController
   def filtering(gatherings)
     @gatherings = gatherings
 
-    filter = params[:filter]
+    if params[:filter]
+      filter = params[:filter]
 
-    if filter
-      if filter[:categories]
-        categories = filter[:categories].split(",")
-        @gatherings = @gatherings.where(gathering_category_id: categories)
-      end
+      if filter
+        if filter[:categories]
+          categories = filter[:categories].split(",")
+          @gatherings = @gatherings.where(gathering_category_id: categories)
+        end
 
-      if true?(filter[:active])
-        @gatherings = @gatherings.where(ended: false)
-      end
+        if true?(filter[:active])
+          @gatherings = @gatherings.where(ended: false)
+        end
 
-      if true?(filter[:not_active])
-        @gatherings = @gatherings.where(ended: true)
-      end
+        if true?(filter[:not_active])
+          @gatherings = @gatherings.where(ended: true)
+        end
 
-      if true?(filter[:new])
-        @gatherings = @gatherings.where("created_at >= ?", 2.week.ago)
+        if true?(filter[:new])
+          @gatherings = @gatherings.where("created_at >= ?", 2.week.ago)
+        end
       end
     end
 
@@ -164,17 +166,18 @@ class Api::V1::GatheringsController < ApiController
   def searching(gatherings)
     @gatherings = gatherings
 
-    query = params[:query].downcase
+    if params[:query]
+      query = params[:query].downcase
 
-    if query
-      # Search gathering by title, description, sum and by gathering category title, and by volunteer name
-      @gatherings = @gatherings.where("LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR CAST(sum AS TEXT) LIKE ? OR gathering_category_id
+      if query
+        # Search gathering by title, description, sum and by gathering category title, and by volunteer name
+        @gatherings = @gatherings.where("LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR CAST(sum AS TEXT) LIKE ? OR gathering_category_id
                                        IN (SELECT id FROM gathering_categories WHERE LOWER(title) LIKE ?)
                                        OR creator_id IN (SELECT id FROM volunteers WHERE LOWER(name) LIKE ?)",
-                                      "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%")
+                                        "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%")
 
+      end
     end
-
     @gatherings
   end
 
