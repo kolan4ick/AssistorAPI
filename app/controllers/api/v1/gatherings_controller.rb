@@ -143,7 +143,7 @@ class Api::V1::GatheringsController < ApiController
         end
 
         # If both active and not_active are true, then do not change @gatherings
-        unless true?(filter[:active] && filter[:not_active])
+        unless true?(filter[:active]) && true?(filter[:not_active])
           if true?(filter[:active])
             @gatherings = @gatherings.where(ended: false)
           end
