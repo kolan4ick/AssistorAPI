@@ -1,7 +1,7 @@
 class Api::V1::GatheringsController < ApiController
   include GatheringHelper
 
-  before_action :authenticate!, only: [:index, :show, :filter_gatherings, :create_view, :viewed, :created_by_volunteer]
+  before_action :authenticate!, only: [:index, :show, :search, :create_view, :viewed, :created_by_volunteer]
   before_action :set_gathering, only: [:show, :update, :destroy]
   before_action :volunteer_authenticate!, only: [:create, :update, :destroy]
   before_action :check_volunteer!, only: [:update, :destroy]
@@ -14,7 +14,7 @@ class Api::V1::GatheringsController < ApiController
 
     @favouritable = current_user || current_volunteer
 
-    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
+    render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def search
@@ -32,7 +32,7 @@ class Api::V1::GatheringsController < ApiController
     @gatherings = searching(@gatherings)
 
     @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
-    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
+    render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def show
@@ -53,7 +53,7 @@ class Api::V1::GatheringsController < ApiController
     @gathering.creator = current_volunteer
 
     if @gathering.save
-      render json: @gathering, status: :created, each_serializer: GatheringSerializer, scope: current_volunteer
+      render json: @gatherings.order(created_at: :desc), status: :created, each_serializer: GatheringSerializer, scope: current_volunteer
     else
       render json: @gathering.errors, status: :unprocessable_entity
     end
@@ -62,7 +62,7 @@ class Api::V1::GatheringsController < ApiController
   # PATCH/PUT /gatherings/1
   def update
     if @gathering.update(gathering_params)
-      render json: @gathering, each_serializer: GatheringSerializer, scope: current_volunteer, status: 200
+      render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: current_volunteer, status: 200
     else
       render json: @gathering.errors, status: :unprocessable_entity
     end
@@ -103,7 +103,7 @@ class Api::V1::GatheringsController < ApiController
 
     @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
 
-    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
+    render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def created_by_volunteer
@@ -114,7 +114,7 @@ class Api::V1::GatheringsController < ApiController
 
     @favouritable = current_user || current_volunteer
 
-    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
+    render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   private
@@ -142,21 +142,24 @@ class Api::V1::GatheringsController < ApiController
           @gatherings = @gatherings.where(gathering_category_id: categories)
         end
 
-        if true?(filter[:active])
-          @gatherings = @gatherings + @gatherings.where(ended: false)
-        end
+        # If both active and not_active are true, then do not change @gatherings
+        unless true?(filter[:active] && filter[:not_active])
+          if true?(filter[:active])
+            @gatherings = @gatherings.where(ended: false)
+          end
 
-        if true?(filter[:not_active])
-          @gatherings = @gatherings + @gatherings.where(ended: true)
+          if true?(filter[:not_active])
+            @gatherings = @gatherings.where(ended: true)
+          end
         end
 
         if true?(filter[:new])
-          @gatherings = @gatherings + @gatherings.where("created_at >= ?", 2.week.ago)
+          @gatherings = @gatherings.where("created_at >= ?", 2.week.ago)
         end
       end
     end
 
-    @gatherings.uniq
+    @gatherings
   end
 
   def true?(obj)
