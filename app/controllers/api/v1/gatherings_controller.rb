@@ -89,14 +89,11 @@ class Api::V1::GatheringsController < ApiController
   end
 
   def viewed
-    if current_user
-      @gatherings = current_user.viewed_gatherings
-    elsif current_volunteer
-      @gatherings = current_volunteer.viewed_gatherings
-    else
-      render json: { error: "Ви не авторизовані" }, status: 401
-      return
-    end
+
+    @authenticatable = current_user || current_volunteer
+
+    @gatherings = @authenticatable.viewed_gatherings
+
     @page = (params[:page] || 1).to_i
 
     @favouritable = current_user || current_volunteer

@@ -1,4 +1,5 @@
 require 'faker'
+require 'open-uri'
 
 Faker::Config.locale = 'uk' # or Faker::Config.locale = :es
 
@@ -19,8 +20,13 @@ GatheringCategory.create!(title: 'Військова допомога', descript
 GatheringCategory.create!(title: 'Медична допомога', description: 'Медична допомога')
 GatheringCategory.create!(title: 'Допомога тваринам', description: 'Допомога тваринам')
 
-# Create 50 Gatherings
+# Create 20 Gatherings
 20.times do
+  photos = []
+  3.times do
+    file = StringIO.new(URI.parse(Faker::LoremFlickr.image(size: "600x700", search_terms: ['people'])).read)
+    photos << ActiveStorage::Blob.create_and_upload!(io: file, filename: Faker::Internet.username + ".png", content_type: "image/png")
+  end
   Gathering.create!(
     title: Faker::Lorem.sentence,
     description: Faker::Lorem.paragraph,
@@ -29,7 +35,26 @@ GatheringCategory.create!(title: 'Допомога тваринам', descriptio
     end: Faker::Time.between(from: DateTime.now + 30, to: DateTime.now + 60),
     ended: false,
     verification: false,
+    photos: photos,
     link: Faker::Internet.url,
     creator: volunteer,
     gathering_category: GatheringCategory.all.sample)
+end
+
+
+# Create 20 Volunteers
+20.times do
+  password = Faker::Internet.password
+  avatar = URI.parse(Faker::Avatar.image(slug: Faker::Internet.username, size: "150x150", format: "png", set: "set4", bgset: "bg1")).read
+
+  Volunteer.create!(
+    name: Faker::Name.first_name,
+    surname: Faker::Name.last_name,
+    email: Faker::Internet.email,
+    username: Faker::Internet.username,
+    password: password,
+    avatar: ActiveStorage::Blob.create_and_upload!(io: StringIO.new(avatar), filename: Faker::Internet.username + ".png", content_type: "image/png"),
+    password_confirmation: password,
+    phone: Faker::PhoneNumber.cell_phone,
+    description: Faker::Lorem.paragraph)
 end
