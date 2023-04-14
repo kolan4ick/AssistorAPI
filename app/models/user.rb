@@ -37,4 +37,8 @@ class User < ApplicationRecord
   def expired_authentication_token?
     DateTime.now > (authentication_token_created_at + token_expires_in)
   end
+
+  # validations
+  validates :name, presence: true
+  validates :surname, presence: true
 end

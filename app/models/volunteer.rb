@@ -43,4 +43,8 @@ class Volunteer < ApplicationRecord
   end
 
   validates :username, presence: true, uniqueness: { case_sensitive: false }
+  validates :name, presence: true
+  validates :surname, presence: true
+  validates :phone, presence: true, format: { with: /\A\+?3?8?(0[5-9][0-9]\d{7})\z/ }
+  validates :description, presence: true
 end

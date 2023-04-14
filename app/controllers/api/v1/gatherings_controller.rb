@@ -53,18 +53,18 @@ class Api::V1::GatheringsController < ApiController
     @gathering.creator = current_volunteer
 
     if @gathering.save
-      render json: @gatherings.order(created_at: :desc), status: :created, each_serializer: GatheringSerializer, scope: current_volunteer
+      render json: @gathering, status: :created, each_serializer: GatheringSerializer, scope: current_volunteer
     else
-      render json: @gathering.errors, status: :unprocessable_entity
+      render json: { error_message: "#{@gathering.errors.full_messages.join(", ")}" }, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /gatherings/1
   def update
     if @gathering.update(gathering_params)
-      render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: current_volunteer, status: 200
+      render json: @gathering, each_serializer: GatheringSerializer, scope: current_volunteer, status: 200
     else
-      render json: @gathering.errors, status: :unprocessable_entity
+      render json: { error_message: "#{@gathering.errors.full_messages.join(", ")}" }, status: :unprocessable_entity
     end
   end
 

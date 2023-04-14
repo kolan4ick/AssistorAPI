@@ -10,4 +10,11 @@ class Gathering < ApplicationRecord
   has_many :gathering_views
 
   has_many :favourite_gatherings
+
+  validates :title, presence: true
+  validates :description, presence: true
+  validates :sum, presence: true
+  validates :start, presence: true
+  validates :end, presence: true
+  validates :link, presence: true, format: { with: URI.regexp }
 end
