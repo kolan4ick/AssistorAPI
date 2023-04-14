@@ -246,6 +246,7 @@ uk:
         start: "Початок"
         end: "Кінець"
         ended: "Закінчено"
+        processed: "Оброблено"
         link: "Посилання"
         volunteer_id: "Волонтер"
         volunteer: "Волонтер"

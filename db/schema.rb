@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_19_221643) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_14_211114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,6 +106,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_221643) do
     t.datetime "updated_at", null: false
     t.integer "creator_id"
     t.integer "gathering_category_id"
+    t.boolean "processed", default: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -138,7 +139,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_19_221643) do
     t.string "username"
     t.string "name"
     t.boolean "verification", default: false
-    t.integer "trust_level"
+    t.integer "trust_level", default: 0
     t.string "description"
     t.string "surname"
     t.text "authentication_token"

@@ -88,7 +88,7 @@ ActiveAdmin.register Volunteer do
 
   controller do
     def update
-      changed_to_verified = params[:volunteer][:verification] == '1' && Volunteer.find(params[:id]).verification == false
+      changed_to_verified = volunteer_params[:verification] == '1' && Volunteer.find(params[:id]).verification == false
 
       @volunteer = Volunteer.find(params[:id])
 

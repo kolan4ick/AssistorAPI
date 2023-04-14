@@ -13,7 +13,28 @@ volunteer = Volunteer.create!(
   username: "sternenko",
   password: 'kolan4ick',
   phone: '+380 67 123 45 67',
-  description: 'Я добре знаю місто, тому можу допомогти знайти потрібну людину.')
+  description: 'Я добре знаю місто, тому можу допомогти знайти потрібну людину.',
+)
+
+volunteer.avatar.attach(io: URI.open(Faker::Avatar.image(slug: 'sternenko', size: '150x150', format: 'png', set: 'set4', bgset: 'bg1')),
+                        filename: 'volunteer.png', content_type: 'image/png')
+
+# Create 20 Volunteers
+20.times do
+  password = Faker::Internet.password
+  avatar = URI.parse(Faker::Avatar.image(slug: Faker::Internet.username, size: "150x150", format: "png", set: "set4", bgset: "bg1")).read
+
+  Volunteer.create!(
+    name: Faker::Name.first_name,
+    surname: Faker::Name.last_name,
+    email: Faker::Internet.email,
+    username: Faker::Internet.username,
+    password: password,
+    avatar: ActiveStorage::Blob.create_and_upload!(io: StringIO.new(avatar), filename: Faker::Internet.username + ".png", content_type: "image/png"),
+    password_confirmation: password,
+    phone: Faker::PhoneNumber.cell_phone,
+    description: Faker::Lorem.paragraph)
+end
 
 # Create Gathering Categories
 GatheringCategory.create!(title: 'Військова допомога', description: 'Військова допомога')
@@ -37,24 +58,8 @@ GatheringCategory.create!(title: 'Допомога тваринам', descriptio
     verification: false,
     photos: photos,
     link: Faker::Internet.url,
-    creator: volunteer,
+    creator: Volunteer.all.sample,
     gathering_category: GatheringCategory.all.sample)
 end
 
 
-# Create 20 Volunteers
-20.times do
-  password = Faker::Internet.password
-  avatar = URI.parse(Faker::Avatar.image(slug: Faker::Internet.username, size: "150x150", format: "png", set: "set4", bgset: "bg1")).read
-
-  Volunteer.create!(
-    name: Faker::Name.first_name,
-    surname: Faker::Name.last_name,
-    email: Faker::Internet.email,
-    username: Faker::Internet.username,
-    password: password,
-    avatar: ActiveStorage::Blob.create_and_upload!(io: StringIO.new(avatar), filename: Faker::Internet.username + ".png", content_type: "image/png"),
-    password_confirmation: password,
-    phone: Faker::PhoneNumber.cell_phone,
-    description: Faker::Lorem.paragraph)
-end
