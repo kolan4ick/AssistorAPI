@@ -20,7 +20,7 @@ ActiveAdmin.register User do
   filter :created_at
 
   form do |f|
-    f.inputs "User Details" do
+    f.inputs t("active_admin.details", model: t("activerecord.models.user.one")) do
       f.input :email
       f.input :password
       f.input :password_confirmation
@@ -39,6 +39,7 @@ ActiveAdmin.register User do
       row :authentication_token
       row :username
       row :created_at
+      active_admin_comments
     end
   end
 end

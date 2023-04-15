@@ -1,12 +1,11 @@
 ActiveAdmin.register Gathering do
   permit_params :title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification,
-                :link, :creator_id, :processed, photos: [], finished_photos: []
+                :link, :creator, :processed, photos: [], finished_photos: []
 
   index do
     selectable_column
     id_column
     column :title
-    column :description
     column :gathering_category
     column :sum
     column :start
@@ -15,9 +14,9 @@ ActiveAdmin.register Gathering do
     column :processed
     column :verification
     column :link
-    column :creator_id
-    column :photos
-    column :finished_photos
+    column :creator do | gathering |
+      link_to "#{gathering.creator.name} #{gathering.creator.surname}", admin_volunteer_path(gathering.creator)
+    end
     actions
   end
 
@@ -30,11 +29,11 @@ ActiveAdmin.register Gathering do
   filter :ended
   filter :verification
   filter :link
-  filter :creator_id
+  filter :creator, collection: Volunteer.all.map { | u | ["#{u.name} #{u.surname}", u.id] }
   filter :processed
 
   form do | f |
-    f.inputs "Gathering Details" do
+    f.inputs t("active_admin.details", model: t("activerecord.models.gathering.one")) do
       f.input :title
       f.input :description
       f.input :gathering_category_id, as: :select, collection: GatheringCategory.all.map { | u | [u.title, u.id] }
@@ -45,7 +44,7 @@ ActiveAdmin.register Gathering do
       f.input :processed
       f.input :verification
       f.input :link
-      f.input :creator_id, as: :select, collection: Volunteer.all.map { | u | ["#{u.name} #{u.surname}", u.id] }
+      f.input :creator, as: :select, collection: Volunteer.all.map { | u | ["#{u.name} #{u.surname}", u.id] }
       f.input :photos, as: :file, input_html: { multiple: true, accept: 'image/*' }
       f.input :finished_photos, as: :file, input_html: { multiple: true, accept: 'image/*' }
     end
@@ -70,23 +69,39 @@ ActiveAdmin.register Gathering do
       row :photos do | gathering |
         div do
           gathering.photos.each do | photo |
-            span image_tag url_for(photo), size: '100'
+            div class: "photo-card" do
+              span image_tag url_for(photo)
+              span link_to t(:delete), delete_picture_admin_gathering_path(gathering.id, picture_id: photo.id),
+                           method: :delete, data: { confirm: t("active_admin.delete_confirmation") }, class: "delete-button"
+            end
           end
         end
       end
-      row :finished_photos do
+      row :finished_photos do | gathering |
         div do
           gathering.finished_photos.each do | photo |
-            span image_tag url_for(photo), size: '100'
+            div class: "photo-card" do
+              span image_tag url_for(photo), size: '100x100'
+              span link_to t(:delete), delete_picture_admin_gathering_path(gathering.id, picture_id: photo.id),
+                           method: :delete, data: { confirm: t("active_admin.delete_confirmation") }, class: "delete-button"
+            end
           end
         end
       end
     end
+    active_admin_comments
   end
 
   controller do
+    include RemoveEmptyElements
+
     def update
       @gathering = Gathering.find(params[:id])
+
+      # remove empty photos from array
+      params[:gathering][:photos] = remove_empty(gathering_params[:photos])
+      params[:gathering][:finished_photos] = remove_empty(gathering_params[:finished_photos])
+
       was_processed = @gathering.processed
 
       if @gathering.update(gathering_params)
@@ -104,7 +119,14 @@ ActiveAdmin.register Gathering do
 
     def gathering_params
       params.require(:gathering).permit(:title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification,
-                                        :link, :creator_id, :processed, photos: [], finished_photos: [])
+                                        :link, :creator, :processed, photos: [], finished_photos: [])
     end
   end
+
+  member_action :delete_picture, method: :delete do
+    picture = ActiveStorage::Attachment.find(params[:picture_id])
+    picture.purge_later
+    redirect_back(fallback_location: admin_gathering_path(params[:id]))
+  end
+
 end

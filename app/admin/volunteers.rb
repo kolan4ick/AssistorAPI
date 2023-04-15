@@ -34,8 +34,8 @@ ActiveAdmin.register Volunteer do
   filter :created_at
   filter :updated_at
 
-  form do |f|
-    f.inputs "Volunteer Details" do
+  form do | f |
+    f.inputs t("active_admin.details", model: t("activerecord.models.volunteer.one")) do
       f.input :name
       f.input :surname
       f.input :email
@@ -63,33 +63,49 @@ ActiveAdmin.register Volunteer do
       row :banned
       row :verification
       row :authentication_token
-      row :avatar do |volunteer|
+      row :avatar do | volunteer |
         image_tag volunteer.avatar, size: '100' if volunteer.avatar.present?
       end
-      row :documents do
+      row :documents do | volunteer |
         div do
-          volunteer.documents.each do |document|
-            span image_tag document, size: '1000'
+          volunteer.documents.each do | document |
+            div class: "photo-card" do
+              span image_tag url_for(document)
+              span link_to t(:delete), delete_picture_admin_volunteer_path(volunteer.id, picture_id: document.id),
+                           method: :delete, data: { confirm: t("active_admin.delete_confirmation") }, class: "delete-button"
+            end
           end
         end
       end
-      row :created_gatherings do
-        div do
-          volunteer.created_gatherings.each do |gathering|
-            span link_to gathering.title, admin_gathering_path(gathering)
-          end
-        end
-      end
-
       row :created_at
       row :updated_at
+      panel t('activerecord.models.gathering.many') do
+        table_for volunteer.created_gatherings do
+          column :title do | gathering |
+            link_to gathering.title, admin_gathering_path(gathering)
+          end
+          column :sum
+          column :link
+        end
+      end
+      active_admin_comments
     end
   end
 
+  member_action :delete_picture, method: :delete do
+    picture = ActiveStorage::Attachment.find(params[:picture_id])
+    picture.purge_later
+    redirect_back(fallback_location: admin_volunteer_path(params[:id]))
+  end
+
   controller do
+    include RemoveEmptyElements
+
     def update
       changed_to_verified = volunteer_params[:verification] == '1' && Volunteer.find(params[:id]).verification == false
 
+      # delete empty documents
+      params[:volunteer][:documents] = remove_empty(params[:volunteer][:documents])
       @volunteer = Volunteer.find(params[:id])
 
       if @volunteer.update(volunteer_params)
@@ -111,4 +127,5 @@ ActiveAdmin.register Volunteer do
                                         :updated_at, :avatar, :banned, documents: [])
     end
   end
+
 end
