@@ -2,7 +2,7 @@ ActiveAdmin.register Volunteer do
 
   permit_params :name, :surname, :email, :phone,
                 :username, :description, :trust_level, :verification, :created_at,
-                :updated_at, :avatar, :banned, documents: [], created_gatherings: []
+                :updated_at, :avatar, :banned, :processed, documents: [], created_gatherings: []
 
   index do
     selectable_column
@@ -16,6 +16,7 @@ ActiveAdmin.register Volunteer do
     column :trust_level
     column :banned
     column :verification
+    column :processed
     column :avatar
     column :created_at
     column :updated_at
@@ -31,6 +32,7 @@ ActiveAdmin.register Volunteer do
   filter :trust_level
   filter :banned
   filter :verification
+  filter :processed
   filter :created_at
   filter :updated_at
 
@@ -45,6 +47,7 @@ ActiveAdmin.register Volunteer do
       f.input :trust_level
       f.input :banned
       f.input :verification
+      f.input :processed
       f.input :avatar, as: :file, input_html: { accept: 'image/*' }
       f.input :documents, as: :file, input_html: { multiple: true, accept: 'image/*' }
     end
@@ -62,6 +65,7 @@ ActiveAdmin.register Volunteer do
       row :trust_level
       row :banned
       row :verification
+      row :processed
       row :authentication_token
       row :avatar do | volunteer |
         image_tag volunteer.avatar, size: '100' if volunteer.avatar.present?
