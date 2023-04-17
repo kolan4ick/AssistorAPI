@@ -70,7 +70,7 @@ ActiveAdmin.register Gathering do
         div do
           gathering.photos.each do | photo |
             div class: "photo-card" do
-              span image_tag url_for(photo)
+              span image_tag photo.variant(resize_to_limit: [500, 500])
               span link_to t(:delete), delete_picture_admin_gathering_path(gathering.id, picture_id: photo.id),
                            method: :delete, data: { confirm: t("active_admin.delete_confirmation") }, class: "delete-button"
             end
@@ -81,7 +81,7 @@ ActiveAdmin.register Gathering do
         div do
           gathering.finished_photos.each do | photo |
             div class: "photo-card" do
-              span image_tag url_for(photo), size: '100x100'
+              span image_tag photo.variant(resize_to_limit: [500, 500])
               span link_to t(:delete), delete_picture_admin_gathering_path(gathering.id, picture_id: photo.id),
                            method: :delete, data: { confirm: t("active_admin.delete_confirmation") }, class: "delete-button"
             end
