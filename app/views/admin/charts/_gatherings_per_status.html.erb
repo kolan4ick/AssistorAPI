@@ -1,0 +1,14 @@
+<%
+  # Gatherings with boolean fields: ended, verified; and datetime field: end
+  active_gatherings_data = Gathering.where(ended: false).where("'end' > ?", DateTime.now).count
+  ended_gatherings_data = Gathering.where(ended: true).count
+  verified_gatherings_data = Gathering.where(verification: true).count
+
+  data = [
+    [ t("activeadmin.charts.active"), active_gatherings_data ],
+    [ t("activeadmin.charts.ended"), ended_gatherings_data ],
+    [ t("activeadmin.charts.verified"), verified_gatherings_data ]
+  ]
+%>
+
+<%= pie_chart data %>

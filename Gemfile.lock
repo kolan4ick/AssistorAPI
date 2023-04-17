@@ -93,6 +93,7 @@ GEM
     builder (3.2.4)
     case_transform (0.2)
       activesupport
+    chartkick (5.0.1)
     chronic (0.10.2)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
@@ -290,6 +291,7 @@ DEPENDENCIES
   activeadmin
   arctic_admin
   bootsnap
+  chartkick
   debug
   devise
   devise-token_authenticatable

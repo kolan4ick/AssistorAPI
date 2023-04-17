@@ -1,0 +1,1 @@
+<%= line_chart (User.all + Volunteer.all).group_by { | u | u.created_at.to_date }.transform_values(&:size) %>

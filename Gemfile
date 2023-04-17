@@ -28,6 +28,8 @@ gem 'devise-token_authenticatable'
 
 gem "faker"
 
+gem "chartkick"
+
 gem 'whenever', require: false
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"

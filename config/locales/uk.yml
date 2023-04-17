@@ -389,3 +389,15 @@ uk:
       next: "Наступна"
       previous: "Попередня"
   delete: "Видалити"
+  activeadmin:
+    charts:
+      users_per_day: "Статистика реєстрації користувачів"
+      gatherings_per_status: "Статистика зборів"
+      volunteers_per_status: "Статистика волонтерів"
+      unprocessed: "Неперевірені"
+      processed: "Перевірені"
+      verified: "Підтверджені"
+      banned: "Заблоковані"
+      unverified: "Не підтверджені"
+      ended: "Закінчені"
+      active: "Активні"

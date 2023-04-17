@@ -1,0 +1,17 @@
+<%
+  processed_volunteers_data = Volunteer.where(processed: true).count
+  unprocessed_volunteers_data = Volunteer.where(processed: false).count
+  verified_volunteers_data = Volunteer.where(processed: true, verification: true).count
+  banned_volunteers_data = Volunteer.where(processed: true, banned: true).count
+  unverified_volunteers_data = Volunteer.where(processed: true, verification: false).count
+
+  data = [
+    [t("activeadmin.charts.unprocessed"), unprocessed_volunteers_data],
+    [t("activeadmin.charts.processed"), processed_volunteers_data],
+    [t("activeadmin.charts.verified"), verified_volunteers_data],
+    [t("activeadmin.charts.banned"), banned_volunteers_data],
+    [t("activeadmin.charts.unverified"), unverified_volunteers_data]
+  ]
+%>
+
+<%= pie_chart data %>
