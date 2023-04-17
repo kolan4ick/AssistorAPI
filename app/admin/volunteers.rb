@@ -128,7 +128,7 @@ ActiveAdmin.register Volunteer do
     def volunteer_params
       params.require(:volunteer).permit(:name, :surname, :email, :phone,
                                         :username, :description, :trust_level, :verification, :created_at,
-                                        :updated_at, :avatar, :banned, documents: [])
+                                        :updated_at, :avatar, :processed, :banned, documents: [])
     end
   end
 
