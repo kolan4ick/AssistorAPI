@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GatheringSerializer < ActiveModel::Serializer
+  include Rails.application.routes.url_helpers
+
   attributes :id, :title, :description, :sum, :gathered_sum, :start, :end, :ended, :verification, :link, :photos,
              :finished_photos, :created_at, :updated_at, :creator_id, :gathering_category_id, :is_favourite, :is_editable
 
