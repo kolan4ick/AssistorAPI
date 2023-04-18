@@ -11,6 +11,10 @@ class Gathering < ApplicationRecord
 
   has_many :favourite_gatherings
 
+  def is_monobank_link?
+    link.include? 'send.monobank.ua/jar/'
+  end
+
   validates :title, presence: true
   validates :description, presence: true
   validates :sum, presence: true

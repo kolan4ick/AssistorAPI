@@ -112,6 +112,7 @@ uk:
         start: "Початок"
         end: "Кінець"
         ended: "Закінчено"
+        gathered_sum: "Зібрана сума"
         processed: "Оброблено"
         link: "Посилання"
         volunteer_id: "Волонтер"

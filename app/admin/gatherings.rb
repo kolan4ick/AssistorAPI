@@ -1,5 +1,5 @@
 ActiveAdmin.register Gathering do
-  permit_params :title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification,
+  permit_params :title, :description, :gathering_category_id, :sum, :gathered_sum, :start, :end, :ended, :verification,
                 :link, :creator_id, :processed, photos: [], finished_photos: []
 
   index do
@@ -8,6 +8,7 @@ ActiveAdmin.register Gathering do
     column :title
     column :gathering_category
     column :sum
+    column :gathered_sum
     column :start
     column :end
     column :ended
@@ -24,6 +25,7 @@ ActiveAdmin.register Gathering do
   filter :description
   filter :gathering_category
   filter :sum
+  filter :gathered_sum
   filter :start
   filter :end
   filter :ended
@@ -38,6 +40,7 @@ ActiveAdmin.register Gathering do
       f.input :description
       f.input :gathering_category_id, as: :select, collection: GatheringCategory.all.map { | u | [u.title, u.id] }
       f.input :sum
+      f.input :gathered_sum
       f.input :start
       f.input :end
       f.input :ended
@@ -57,6 +60,7 @@ ActiveAdmin.register Gathering do
       row :description
       row :gathering_category
       row :sum
+      row :gathered_sum
       row :start
       row :end
       row :ended
@@ -119,7 +123,7 @@ ActiveAdmin.register Gathering do
 
     def gathering_params
       params.require(:gathering).permit(:title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification,
-                                        :link, :creator_id, :processed, photos: [], finished_photos: [])
+                                        :link, :creator_id, :processed, :gathered_sum, photos: [], finished_photos: [])
     end
   end
 
