@@ -9,36 +9,44 @@ namespace :update_gathered_sum do
     # Get all unfinished gatherings
     gatherings = Gathering.where(ended: false)
 
+    # Create an array to store the threads
+    threads = []
+
     # Update the gathered_sum field for each gathering
-    gatherings.each do | gathering |
+    gatherings.each do |gathering|
       next unless gathering.is_monobank_link?
 
-      Thread.new do
-        # Create a new page
-        page = browser.new_page
+      # Create a new thread for each gathering
+      threads << Thread.new(gathering) do |g|
+        begin
+          # Create a new page
+          page = browser.new_page
 
-        # Go to the gathering's link
-        page.goto(gathering.link)
+          # Go to the gathering's link
+          page.goto(g.link)
 
-        # Wait for the .stats-data-value selector to appear
-        page.wait_for_selector('.stats-data-value')
+          # Wait for the .stats-data-value selector to appear
+          page.wait_for_selector('.stats-data-value')
 
-        # Get the gathered sum value
-        gathered_sum = page.evaluate("document.querySelector('.stats-data-value').innerText")
+          # Get the gathered sum value
+          gathered_sum = page.evaluate("document.querySelector('.stats-data-value').innerText")
 
-        # Remove the spaces from the gathered sum value and convert it to a float
-        gathered_sum = gathered_sum.gsub(' ', '').to_f
+          # Remove the spaces from the gathered sum value and convert it to a float
+          gathered_sum = gathered_sum.gsub(' ', '').to_f
 
-        # Update the gathering's gathered_sum field
-        gathering.update(gathered_sum: gathered_sum)
-
-        # Close the page
-        page.close
+          # Update the gathering's gathered_sum field
+          g.update!(gathered_sum: gathered_sum)
+        rescue StandardError => e
+          puts "Error updating gathering #{g.id}: #{e.message}"
+        ensure
+          # Close the page
+          page.close if page
+        end
       end
     end
 
     # Wait for all threads to finish
-    Thread.list.each { | t | t.join unless t == Thread.current }
+    threads.each(&:join)
 
     # Close the browser
     browser.close
