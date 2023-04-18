@@ -1,6 +1,6 @@
 ActiveAdmin.register Gathering do
   permit_params :title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification,
-                :link, :creator, :processed, photos: [], finished_photos: []
+                :link, :creator_id, :processed, photos: [], finished_photos: []
 
   index do
     selectable_column
@@ -119,7 +119,7 @@ ActiveAdmin.register Gathering do
 
     def gathering_params
       params.require(:gathering).permit(:title, :description, :gathering_category_id, :sum, :start, :end, :ended, :verification,
-                                        :link, :creator, :processed, photos: [], finished_photos: [])
+                                        :link, :creator_id, :processed, photos: [], finished_photos: [])
     end
   end
 
