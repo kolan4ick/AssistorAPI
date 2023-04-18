@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GatheringSerializer < ActiveModel::Serializer
-  require 'capybara'
+  require 'puppeteer-ruby'
   include Rails.application.routes.url_helpers
 
   attributes :id, :title, :description, :sum, :start, :end, :ended, :verification, :link, :photos,
@@ -26,13 +26,12 @@ class GatheringSerializer < ActiveModel::Serializer
   end
 
   def already_gathered
-    Capybara.default_driver = :selenium
-
-    # Open the page
-    session = Capybara::Session.new(:selenium)
-    session.visit(object.link)
-
-    # Remove white spaces and parse to float
-    session.find('.stats-data-value').text.gsub(/\s+/, '').to_f
+    Puppeteer.launch(headless: true) do | browser |
+      page = browser.new_page
+      page.goto(object.link)
+      page.wait_for_selector('.stats-data-value')
+      result = page.evaluate("document.querySelector('.stats-data-value').innerText")
+      return result
+    end
   end
 end

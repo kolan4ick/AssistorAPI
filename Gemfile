@@ -30,8 +30,7 @@ gem "faker"
 
 gem "chartkick"
 
-gem 'capybara'
-gem 'selenium-webdriver'
+gem 'puppeteer-ruby'
 
 gem 'whenever', require: false
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
