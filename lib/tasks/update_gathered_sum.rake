@@ -11,7 +11,7 @@ namespace :update_gathered_sum do
 
     # Update the gathered_sum field for each gathering
     gatherings.each do | gathering |
-      next if gathering.is_monobank_link?
+      next unless gathering.is_monobank_link?
 
       Thread.new do
         # Create a new page
