@@ -4,8 +4,19 @@ class GatheringSerializer < ActiveModel::Serializer
   require 'puppeteer-ruby'
   include Rails.application.routes.url_helpers
 
+  class << self
+    attr_accessor :browser
+  end
+
   attributes :id, :title, :description, :sum, :start, :end, :ended, :verification, :link, :photos,
              :finished_photos, :created_at, :updated_at, :creator_id, :gathering_category_id, :is_favourite, :is_editable, :already_gathered
+
+  def self.initialize_browser
+    unless @browser
+      @browser = Puppeteer.launch(headless: true)
+      at_exit { @browser.close }
+    end
+  end
 
   def photos
     object.photos.map { | photo | rails_blob_url(photo.variant(resize_to_limit: [1170, 2532]), disposition: 'inline', signed: true) }
@@ -26,12 +37,10 @@ class GatheringSerializer < ActiveModel::Serializer
   end
 
   def already_gathered
-    browser = Puppeteer.launch(headless: true)
-    page = browser.new_page
+    self.class.initialize_browser
+    page = self.class.browser.new_page
     page.goto(object.link)
     page.wait_for_selector('.stats-data-value')
-    result = page.evaluate("document.querySelector('.stats-data-value').innerText")
-    browser.close
-    result
+    page.evaluate("document.querySelector('.stats-data-value').innerText")
   end
 end
