@@ -26,12 +26,12 @@ class GatheringSerializer < ActiveModel::Serializer
   end
 
   def already_gathered
-    Puppeteer.launch(headless: true) do | browser |
-      page = browser.new_page
-      page.goto(object.link)
-      page.wait_for_selector('.stats-data-value')
-      result = page.evaluate("document.querySelector('.stats-data-value').innerText")
-      return result
-    end
+    browser = Puppeteer.launch(headless: true)
+    page = browser.new_page
+    page.goto(object.link)
+    page.wait_for_selector('.stats-data-value')
+    result = page.evaluate("document.querySelector('.stats-data-value').innerText")
+    browser.close
+    result
   end
 end
