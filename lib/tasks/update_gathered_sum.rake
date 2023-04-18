@@ -26,6 +26,9 @@ namespace :update_gathered_sum do
         # Get the gathered sum value
         gathered_sum = page.evaluate("document.querySelector('.stats-data-value').innerText")
 
+        # Remove the spaces from the gathered sum value and convert it to a float
+        gathered_sum = gathered_sum.gsub(' ', '').to_f
+
         # Update the gathering's gathered_sum field
         gathering.update(gathered_sum: gathered_sum)
 
