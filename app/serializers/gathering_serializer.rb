@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class GatheringSerializer < ActiveModel::Serializer
-  require 'net/http'
-
+  require 'capybara'
   include Rails.application.routes.url_helpers
 
   attributes :id, :title, :description, :sum, :start, :end, :ended, :verification, :link, :photos,
@@ -27,7 +26,13 @@ class GatheringSerializer < ActiveModel::Serializer
   end
 
   def already_gathered
-    # make an HTTP GET request and retrieve the response body as a string
-    Net::HTTP.get_response(URI(object.link)).body
+    Capybara.default_driver = :selenium
+
+    # Open the page
+    session = Capybara::Session.new(:selenium)
+    session.visit(object.link)
+
+    # Remove white spaces and parse to float
+    session.find('.stats-data-value').text.gsub(/\s+/, '').to_f
   end
 end
