@@ -4,7 +4,7 @@ namespace :update_gathered_sum do
   desc 'Update gathered sum of gatherings'
   task :all => :environment do
     # Initialize the browser
-    browser = Puppeteer.launch(headless: true)
+    browser = $browser
 
     # Get all unfinished gatherings
     gatherings = Gathering.where(ended: false)
@@ -21,7 +21,7 @@ namespace :update_gathered_sum do
         page.goto(gathering.link)
 
         # Wait for the .stats-data-value selector to appear on the page or timeout after 4 seconds
-        page.wait_for_selector('.stats-data-value', timeout: 4000)
+        page.wait_for_selector('.stats-data-value', timeout: 3000)
 
         # Get the gathered sum value
         gathered_sum = page.evaluate("document.querySelector('.stats-data-value').innerText")
@@ -38,8 +38,5 @@ namespace :update_gathered_sum do
         page.close if page
       end
     end
-
-    # Close the browser
-    browser.close
   end
 end
