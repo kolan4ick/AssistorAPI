@@ -13,11 +13,11 @@ namespace :update_gathered_sum do
     threads = []
 
     # Update the gathered_sum field for each gathering
-    gatherings.each do |gathering|
-      next unless gathering.is_monobank_link?
+    gatherings.each do | gathering |
+      next if !gathering.is_monobank_link? || gathering.is_ended?
 
       # Create a new thread for each gathering
-      threads << Thread.new(gathering) do |g|
+      threads << Thread.new(gathering) do | g |
         begin
           # Create a new page
           page = browser.new_page
@@ -25,8 +25,8 @@ namespace :update_gathered_sum do
           # Go to the gathering's link
           page.goto(g.link)
 
-          # Wait for the .stats-data-value selector to appear
-          page.wait_for_selector('.stats-data-value')
+          # Wait for the .stats-data-value selector to appear on the page or timeout after 4 seconds
+          page.wait_for_selector('.stats-data-value', timeout: 4000)
 
           # Get the gathered sum value
           gathered_sum = page.evaluate("document.querySelector('.stats-data-value').innerText")

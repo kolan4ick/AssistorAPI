@@ -15,6 +15,10 @@ class Gathering < ApplicationRecord
     link.include? 'send.monobank.ua/jar/'
   end
 
+  def is_ended?
+    self.end < Time.now || self.ended
+  end
+
   validates :title, presence: true
   validates :description, presence: true
   validates :sum, presence: true
