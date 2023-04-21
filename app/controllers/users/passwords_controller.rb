@@ -21,13 +21,28 @@ class Users::PasswordsController < Devise::PasswordsController
   # GET /resource/password/edit?reset_password_token=abcdef
   def edit
     # redirect to assistor app
-    redirect_to "assistor://reset_password?reset_password_token=#{params[:reset_password_token]}", allow_other_host: true, target: '_blank'
+    redirect_to "assistor://reset_password?type=user&reset_password_token=#{params[:reset_password_token]}", allow_other_host: true
   end
 
   # PUT /resource/password
-  # def update
-  #   super
-  # end
+  def update
+    self.resource = resource_class.reset_password_by_token(resource_params)
+    yield resource if block_given?
+
+    if resource.errors.empty?
+      resource.unlock_access! if unlockable?(resource)
+      if Devise.sign_in_after_reset_password
+        resource.after_database_authentication
+        sign_in(resource_name, resource)
+      else
+        set_flash_message!(:notice, :updated_not_active)
+      end
+      render json: resource
+    else
+      set_minimum_password_length
+      respond_with resource
+    end
+  end
 
   # protected
 
