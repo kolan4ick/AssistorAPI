@@ -21,7 +21,7 @@ class Users::PasswordsController < Devise::PasswordsController
   # GET /resource/password/edit?reset_password_token=abcdef
   def edit
     # redirect to assistor app
-    redirect_to "assistor://reset_password?reset_password_token=#{params[:reset_password_token]}", allow_other_host: true
+    redirect_to "assistor://reset_password?reset_password_token=#{params[:reset_password_token]}", allow_other_host: true, target: '_blank'
   end
 
   # PUT /resource/password
