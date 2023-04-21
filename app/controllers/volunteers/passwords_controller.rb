@@ -19,9 +19,10 @@ class Volunteers::PasswordsController < Devise::PasswordsController
   end
 
   # GET /resource/password/edit?reset_password_token=abcdef
-  # def edit
-  #   super
-  # end
+  def edit
+    # redirect to assistor app
+    redirect_to "assistor://reset_password?reset_password_token=#{params[:reset_password_token]}", allow_other_host: true
+  end
 
   # PUT /resource/password
   # def update
