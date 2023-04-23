@@ -35,7 +35,7 @@ class Api::V1::GatheringsController < ApiController
     @gatherings = sorting(@gatherings)
 
     @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
-    render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
+    render json: @gatherings, each_serializer: GatheringSerializer, scope: @favouritable
   end
 
   def show
@@ -192,15 +192,15 @@ class Api::V1::GatheringsController < ApiController
 
       if sort
         case sort[:by]
-        when "created_at_desc" # Created at descending
-          @gatherings = @gatherings.order(created_at: :desc)
+        when "created_at_asc" # Created at descending
+          @gatherings = @gatherings.order(created_at: :asc)
         when "gathered_sum_asc" # Gathered sum ascending
           @gatherings = @gatherings.select("*, (gathered_sum / sum) AS percent_gathered").order(percent_gathered: :asc)
         when "gathered_sum_desc" # Gathered sum descending
           @gatherings = @gatherings.select("*, (gathered_sum / sum) AS percent_gathered").order(percent_gathered: :desc)
         else
           # Default - created at ascending
-          @gatherings = @gatherings.order(created_at: :asc)
+          @gatherings = @gatherings.order(created_at: :desc)
         end
       end
     end
