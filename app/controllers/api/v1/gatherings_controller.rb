@@ -195,9 +195,9 @@ class Api::V1::GatheringsController < ApiController
         when "created_at_desc" # Created at descending
           @gatherings = @gatherings.order(created_at: :desc)
         when "gathered_sum_asc" # Gathered sum ascending
-          @gatherings = @gatherings.order(gathered_sum: :asc)
+          @gatherings = @gatherings.select("*, (gathered_sum / sum) AS percent_gathered").order(percent_gathered: :asc)
         when "gathered_sum_desc" # Gathered sum descending
-          @gatherings = @gatherings.order(gathered_sum: :desc)
+          @gatherings = @gatherings.select("*, (gathered_sum / sum) AS percent_gathered").order(percent_gathered: :desc)
         else
           # Default - created at ascending
           @gatherings = @gatherings.order(created_at: :asc)
