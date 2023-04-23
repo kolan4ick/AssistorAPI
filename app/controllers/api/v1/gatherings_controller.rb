@@ -31,6 +31,9 @@ class Api::V1::GatheringsController < ApiController
     # Search gatherings by search query
     @gatherings = searching(@gatherings)
 
+    # Sort gatherings by sort options
+    @gatherings = sorting(@gatherings)
+
     @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
     render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
@@ -176,6 +179,29 @@ class Api::V1::GatheringsController < ApiController
                                        OR creator_id IN (SELECT id FROM volunteers WHERE LOWER(name) LIKE ?)",
                                         "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%")
 
+      end
+    end
+    @gatherings
+  end
+
+  def sorting(gatherings)
+    @gatherings = gatherings
+
+    if params[:sort]
+      sort = params[:sort]
+
+      if sort
+        case sort[:by]
+        when "created_at_desc" # Created at descending
+          @gatherings = @gatherings.order(created_at: :desc)
+        when "gathered_sum_asc" # Gathered sum ascending
+          @gatherings = @gatherings.order(gathered_sum: :asc)
+        when "gathered_sum_desc" # Gathered sum descending
+          @gatherings = @gatherings.order(gathered_sum: :desc)
+        else
+          # Default - created at ascending
+          @gatherings = @gatherings.order(created_at: :asc)
+        end
       end
     end
     @gatherings
