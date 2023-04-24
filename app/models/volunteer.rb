@@ -42,6 +42,15 @@ class Volunteer < ApplicationRecord
     DateTime.now > (authentication_token_created_at + token_expires_in)
   end
 
+  # Update resource without password but with :password and :password_confirmation, because we validate resource by token
+  def update_without_password(params)
+    params.delete(:current_password)
+    params.delete(:email)
+    params.delete(:username)
+
+    update(params)
+  end
+
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :name, presence: true
   validates :surname, presence: true

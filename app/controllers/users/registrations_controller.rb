@@ -52,7 +52,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     else
       clean_up_passwords resource
       set_minimum_password_length
-      render json: { status: "error", message: resource.errors.map { |error| error.full_message }.join(','), data: resource }
+      render json: { status: "error", message: resource.error.full_messages.join(','), data: resource }
     end
   end
 
