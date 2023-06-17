@@ -14,10 +14,10 @@ namespace :update_gathered_sum do
 
     # Update the gathered_sum field for each gathering
     gatherings.each do | gathering |
-      next if !gathering.is_monobank_link? || gathering.is_ended?
+      next if !gathering.is_monobank_link?
 
       # Check if gathering is ended by end date and update it if it is
-      if gathering.end < Time.now
+      if gathering.is_ended? && !gathering.ended
         gathering.update!(ended: true)
         next
       end
