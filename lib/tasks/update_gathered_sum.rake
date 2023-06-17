@@ -43,6 +43,11 @@ namespace :update_gathered_sum do
           # Update the gathering's gathered_sum field
           g.update!(gathered_sum: gathered_sum)
 
+          # Check if gathering is ended by gathered sum and update it if it is
+          if g.gathered_sum >= g.sum && !g.ended
+            g.update!(ended: true)
+          end
+
           # Close the page
           page.close if page
         rescue StandardError => e
