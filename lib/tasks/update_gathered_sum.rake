@@ -16,6 +16,12 @@ namespace :update_gathered_sum do
     gatherings.each do | gathering |
       next if !gathering.is_monobank_link? || gathering.is_ended?
 
+      # Check if gathering is ended by end date and update it if it is
+      if gathering.end < Time.now
+        gathering.update!(ended: true)
+        next
+      end
+
       # Create a new thread for each gathering
       threads << Thread.new(gathering) do | g |
         begin
