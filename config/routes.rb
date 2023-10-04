@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   namespace :api do
     namespace :v1 do
       devise_for :volunteers, controllers: { sessions: "volunteers/sessions", registrations: 'volunteers/registrations',
                                              passwords: "volunteers/passwords" }, singular: "volunteer"
-      devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations",
-                                        passwords: "users/passwords" }, singular: "user"
+      devise_for :users, controllers: { tokens: "api/v1/users/tokens" }, singular: "user"
       resources :gathering_categories
       resources :gatherings do
         post :create_view, to: 'gatherings#create_view'

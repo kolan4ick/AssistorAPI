@@ -31,7 +31,7 @@ ActiveAdmin.register Gathering do
   filter :ended
   filter :verification
   filter :link
-  filter :creator, collection: Volunteer.all.map { | u | ["#{u.name} #{u.surname}", u.id] }
+  # filter :creator, collection: Volunteer.all.map { | u | ["#{u.name} #{u.surname}", u.id] }
   filter :processed
 
   form do | f |

@@ -1,0 +1,243 @@
+---
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/gatherings/{gathering_id}/create_view":
+    parameters:
+    - name: gathering_id
+      in: path
+      description: gathering_id
+      required: true
+      schema:
+        type: string
+    post:
+      summary: create_view gathering
+      security:
+      - bearerAuth: []
+      description: Create a gathering view
+      tags:
+      - Gatherings
+      responses:
+        '200':
+          description: successful
+  "/api/v1/gatherings/viewed":
+    get:
+      summary: viewed gathering
+      security:
+      - bearerAuth: []
+      tags:
+      - Gatherings
+      description: List viewed gatherings of current user
+      responses:
+        '200':
+          description: successful
+  "/api/v1/gatherings/created_by_volunteer/{volunteer_id}":
+    parameters:
+    - name: volunteer_id
+      in: path
+      description: Volunteer id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: created_by_volunteer gathering
+      security:
+      - bearerAuth: []
+      tags:
+      - Gatherings
+      description: List gatherings created by specific volunteer
+      responses:
+        '200':
+          description: successful
+  "/api/v1/gatherings/search":
+    get:
+      summary: search gathering
+      description: Search gatherings by query, sort and filter
+      parameters:
+      - name: query
+        in: query
+        description: Search query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort query
+        schema:
+          type: string
+          enum:
+          - created_at_asc
+          - gathered_sum_asc
+          - gathered_sum_desc
+      - name: filter
+        in: query
+        description: Filter query
+        type: object
+        style: deepObject
+        explode: true
+        schema:
+          type: object
+          properties:
+            new:
+              type: boolean
+            active:
+              type: boolean
+            not_active:
+              type: boolean
+            categories:
+              type: string
+      security:
+      - bearerAuth: []
+      tags:
+      - Gatherings
+      responses:
+        '200':
+          description: successful
+  "/api/v1/gatherings":
+    get:
+      summary: list gatherings
+      security:
+      - bearerAuth: []
+      tags:
+      - Gatherings
+      responses:
+        '200':
+          description: successful
+  "/api/v1/gatherings/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show gathering
+      security:
+      - bearerAuth: []
+      tags:
+      - Gatherings
+      responses:
+        '200':
+          description: successful
+  "/api/v1/users/tokens/sign_in":
+    post:
+      summary: User sign in
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: User signed in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  surname:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  token:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+                required:
+                - id
+                - type
+                - attributes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+              - login
+              - password
+  "/api/v1/users/tokens/sign_up":
+    post:
+      summary: User sign up
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: User signed up successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  surname:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  token:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+                required:
+                - id
+                - type
+                - attributes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+              required:
+              - name
+              - surname
+              - username
+              - email
+              - password
+              - password_confirmation
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000

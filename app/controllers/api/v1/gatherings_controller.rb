@@ -1,7 +1,7 @@
 class Api::V1::GatheringsController < ApiController
   include GatheringHelper
 
-  before_action :authenticate!, only: [:index, :show, :search, :create_view, :viewed, :created_by_volunteer]
+  before_action :authenticate_devise_api_token!, only: [:index, :show, :search, :create_view, :viewed, :created_by_volunteer]
   before_action :set_gathering, only: [:show, :update, :destroy]
   before_action :volunteer_authenticate!, only: [:create, :update, :destroy]
   before_action :check_volunteer!, only: [:update, :destroy]
@@ -12,7 +12,7 @@ class Api::V1::GatheringsController < ApiController
 
     @gatherings = Gathering.offset(($per_page * @page) - $per_page).limit($per_page)
 
-    @favouritable = current_user || current_volunteer
+    @favouritable = current_devise_api_user || current_volunteer
 
     render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
@@ -20,7 +20,7 @@ class Api::V1::GatheringsController < ApiController
   def search
     @page = (params[:page] || 1).to_i
 
-    @favouritable = current_user || current_volunteer
+    @favouritable = current_devise_api_user || current_volunteer
 
     # Get all gatherings
     @gatherings = Gathering.all
@@ -39,7 +39,8 @@ class Api::V1::GatheringsController < ApiController
   end
 
   def show
-    render json: @gathering
+    @favouritable = current_devise_api_user || current_volunteer
+    render json: @gathering, serializer: GatheringSerializer, scope: @favouritable
   end
 
   # POST /gatherings
@@ -80,7 +81,7 @@ class Api::V1::GatheringsController < ApiController
   def create_view
     @gathering = Gathering.find(params[:gathering_id])
 
-    @viewer = current_user || current_volunteer
+    @viewer = current_devise_api_user || current_volunteer
 
     unless @viewer.viewed_gatherings.include?(@gathering)
       @viewer.viewed_gatherings << @gathering
@@ -93,13 +94,13 @@ class Api::V1::GatheringsController < ApiController
 
   def viewed
 
-    @authenticatable = current_user || current_volunteer
+    @authenticatable = current_devise_api_user || current_volunteer
 
     @gatherings = @authenticatable.viewed_gatherings
 
     @page = (params[:page] || 1).to_i
 
-    @favouritable = current_user || current_volunteer
+    @favouritable = current_devise_api_user || current_volunteer
 
     @gatherings = @gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
 
@@ -112,7 +113,7 @@ class Api::V1::GatheringsController < ApiController
     @volunteer = Volunteer.find(params[:volunteer_id])
     @gatherings = @volunteer.created_gatherings.offset(($per_page * @page) - $per_page).limit($per_page)
 
-    @favouritable = current_user || current_volunteer
+    @favouritable = current_devise_api_user || current_volunteer
 
     render json: @gatherings.order(created_at: :desc), each_serializer: GatheringSerializer, scope: @favouritable
   end
@@ -191,7 +192,7 @@ class Api::V1::GatheringsController < ApiController
       sort = params[:sort]
 
       if sort
-        case sort[:by]
+        case sort
         when "created_at_asc" # Created at descending
           @gatherings = @gatherings.order(created_at: :asc)
         when "gathered_sum_asc" # Gathered sum ascending

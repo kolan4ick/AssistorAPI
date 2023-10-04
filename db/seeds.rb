@@ -12,9 +12,9 @@ volunteer = Volunteer.create!(
   email: 'sternenko@example.com',
   username: "sternenko",
   password: 'kolan4ick',
-  phone: '+380 67 123 45 67',
+  phone: '+380671234567',
   description: 'Я добре знаю місто, тому можу допомогти знайти потрібну людину.',
-)
+  )
 
 volunteer.avatar.attach(io: URI.open(Faker::Avatar.image(slug: 'sternenko', size: '150x150', format: 'png', set: 'set4', bgset: 'bg1')),
                         filename: 'volunteer.png', content_type: 'image/png')
@@ -32,7 +32,7 @@ volunteer.avatar.attach(io: URI.open(Faker::Avatar.image(slug: 'sternenko', size
     password: password,
     avatar: ActiveStorage::Blob.create_and_upload!(io: StringIO.new(avatar), filename: Faker::Internet.username + ".png", content_type: "image/png"),
     password_confirmation: password,
-    phone: Faker::PhoneNumber.cell_phone,
+    phone: "+380671234567",
     description: Faker::Lorem.paragraph)
 end
 
@@ -61,5 +61,3 @@ GatheringCategory.create!(title: 'Допомога тваринам', descriptio
     creator: Volunteer.all.sample,
     gathering_category: GatheringCategory.all.sample)
 end
-
-
