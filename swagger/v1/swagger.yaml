@@ -19,9 +19,9 @@ paths:
         type: string
     post:
       summary: create_view gathering
+      description: Create a gathering view
       security:
       - bearerAuth: []
-      description: Create a gathering view
       tags:
       - Gatherings
       responses:
@@ -30,11 +30,11 @@ paths:
   "/api/v1/gatherings/viewed":
     get:
       summary: viewed gathering
+      description: List viewed gatherings of current user
       security:
       - bearerAuth: []
       tags:
       - Gatherings
-      description: List viewed gatherings of current user
       responses:
         '200':
           description: successful
@@ -48,11 +48,11 @@ paths:
         type: string
     get:
       summary: created_by_volunteer gathering
+      description: List gatherings created by specific volunteer
       security:
       - bearerAuth: []
       tags:
       - Gatherings
-      description: List gatherings created by specific volunteer
       responses:
         '200':
           description: successful
@@ -102,10 +102,17 @@ paths:
   "/api/v1/gatherings":
     get:
       summary: list gatherings
+      description: List all gatherings
       security:
       - bearerAuth: []
       tags:
       - Gatherings
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
       responses:
         '200':
           description: successful
@@ -131,6 +138,7 @@ paths:
       summary: User sign in
       tags:
       - Users
+      description: Sign in a user and return the user's token
       parameters: []
       responses:
         '201':
@@ -178,6 +186,7 @@ paths:
       summary: User sign up
       tags:
       - Users
+      description: Sign up a user and return the user's token
       parameters: []
       responses:
         '201':

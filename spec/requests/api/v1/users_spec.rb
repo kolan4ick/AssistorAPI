@@ -7,6 +7,7 @@ RSpec.describe 'Users', type: :request do
   path '/api/v1/users/tokens/sign_in' do
     post('User sign in') do
       tags 'Users'
+      description 'Sign in a user and return the user\'s token'
 
       parameter name: :user, in: :body, schema: {
         type: :object,
@@ -42,6 +43,7 @@ RSpec.describe 'Users', type: :request do
   path '/api/v1/users/tokens/sign_up' do
     post('User sign up') do
       tags 'Users'
+      description 'Sign up a user and return the user\'s token'
 
       parameter name: :user, in: :body, schema: {
         type: :object,

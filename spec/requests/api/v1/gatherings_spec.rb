@@ -5,6 +5,8 @@ RSpec.describe 'Gatherings', type: :request do
     parameter name: 'gathering_id', in: :path, type: :string, description: 'gathering_id'
 
     post('create_view gathering') do
+      description 'Create a gathering view'
+
       security [bearerAuth: []]
 
       description 'Create a gathering view'
@@ -29,6 +31,7 @@ RSpec.describe 'Gatherings', type: :request do
   path '/api/v1/gatherings/viewed' do
 
     get('viewed gathering') do
+      description 'List viewed gatherings of current user'
       security [bearerAuth: []]
       tags 'Gatherings'
       description 'List viewed gatherings of current user'
@@ -53,6 +56,7 @@ RSpec.describe 'Gatherings', type: :request do
     parameter name: 'volunteer_id', in: :path, type: :string, description: 'Volunteer id'
 
     get('created_by_volunteer gathering') do
+      description 'List gatherings created by specific volunteer'
       security [bearerAuth: []]
       tags 'Gatherings'
       description 'List gatherings created by specific volunteer'
@@ -114,8 +118,12 @@ RSpec.describe 'Gatherings', type: :request do
 
   path '/api/v1/gatherings' do
     get('list gatherings') do
+      description 'List all gatherings'
+
       security [bearerAuth: []]
       tags 'Gatherings'
+
+      parameter name: :page, in: :query, type: :integer, description: 'Page number'
 
       response(200, 'successful') do
 
